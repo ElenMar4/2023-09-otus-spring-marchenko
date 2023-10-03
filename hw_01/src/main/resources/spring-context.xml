@@ -4,19 +4,14 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="reader" class="ru.otus.marchenko.dao.reader.CSVReader">
-        <property name="fileName" value="quizlet.csv"/>
+    <bean id="dao" class="ru.otus.marchenko.dao.CsvQuizletDao">
+        <constructor-arg name="fileName" value="quizlet.csv"/>
     </bean>
 
-    <bean id="parser" class="ru.otus.marchenko.dao.parser.ParserImpl">
-        <property name="resourceReading" ref="reader"/>
-    </bean>
+    <bean id="ioService" class="ru.otus.marchenko.services.ConsoleIoService"/>
 
-    <bean id="dao" class="ru.otus.marchenko.dao.QuizletDaoImpl">
-        <constructor-arg name="parser" ref="parser"/>
-    </bean>
-
-    <bean id="quizlet" class="ru.otus.marchenko.services.QuizletService">
+    <bean id="quizletService" class="ru.otus.marchenko.services.QuizletService">
         <constructor-arg name="dao" ref="dao"/>
+        <constructor-arg name="ioService" ref="ioService"/>
     </bean>
 </beans>

@@ -1,5 +1,5 @@
-What color is a lemon? , orange, yellow, green, yellow,
-What color is an orange? , orange, yellow, green, orange,
-What color is a cucumber? , orange, yellow, green, green,
-What color carrots are? , orange, yellow, green, orange,
-What color is a banana? , orange, yellow, green, yellow,
+What color is a lemon?,orange,*yellow,green
+What color is an orange?,*orange,yellow,green
+What color is a cucumber?,orange,yellow,*green
+What color carrots are?,*orange,yellow,green
+What color is a banana?,orange,*yellow,green

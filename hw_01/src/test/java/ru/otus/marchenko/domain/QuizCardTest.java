@@ -1,7 +1,6 @@
 package ru.otus.marchenko.domain;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.List;
 
@@ -10,37 +9,42 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Класс QuizCard ")
 class QuizCardTest {
 
-    @Test
-    @DisplayName("корректно создается конструктором")
-    void shouldHaveCorrectConstructor(){
-        QuizCard quizCard = new QuizCard("1+1 = ",
-                                        List.of("1", "2", "3"),
-                                        "2");
-        assertAll("quizCard",
-                ()->assertEquals("1+1 = ", quizCard.getTextQuestion()),
-                ()->assertEquals(List.of("1", "2", "3"), quizCard.getAnswerChoices()),
-                ()->assertEquals("2", quizCard.getRightAnswer())
+    private static QuizCard quizCard;
+
+    @BeforeAll
+    static void setUp() {
+        quizCard = new QuizCard("1+1 = ",
+                List.of(new Answer("1", false),
+                        new Answer("2", true),
+                        new Answer("3", false))
         );
     }
 
+    @AfterAll
+    static void tearDown() {
+        quizCard = null;
+    }
+
     @Test
-    @DisplayName("корректно выдает значение поля rightAnswer")
+    @DisplayName("корректно выдает правильный ответ")
     void getRightAnswer() {
-        QuizCard quizCard = new QuizCard(null, null, "answer");
-        assertEquals("answer", quizCard.getRightAnswer());
+        Answer expectedAnswer = new Answer("2", true);
+        assertEquals(expectedAnswer, quizCard.getRightAnswer());
     }
 
     @Test
     @DisplayName("корректно выдает значение поля textQuestion")
     void getTextQuestion() {
-        QuizCard quizCard = new QuizCard("question", null, null);
-        assertEquals("question", quizCard.getTextQuestion());
+        assertEquals("1+1 = ", quizCard.getTextQuestion());
     }
 
     @Test
     @DisplayName("корректно выдает значение поля answerChoices")
     void getAnswerChoices() {
-        QuizCard quizCard = new QuizCard(null, List.of("a", "b"), null);
-        assertEquals(List.of("a", "b"), quizCard.getAnswerChoices());
+        List<Answer> listExpectedAnswer = List.of(
+                new Answer("1", false),
+                new Answer("2", true),
+                new Answer("3", false));
+        assertEquals(listExpectedAnswer, quizCard.getAnswerChoices());
     }
 }
