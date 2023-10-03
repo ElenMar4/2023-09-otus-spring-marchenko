@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="71159750-2f22-4dba-8e4c-3db3675cf31b" name="Changes" comment="add Answer, add IOService, change dao">
-      <change beforePath="$PROJECT_DIR$/hw_01/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/hw_01/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hw_01/src/main/java/ru/otus/marchenko/services/QuizletService.java" beforeDir="false" afterPath="$PROJECT_DIR$/hw_01/src/main/java/ru/otus/marchenko/services/QuizletService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hw_01/src/test/java/ru/otus/marchenko/services/QuizletServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/hw_01/src/test/java/ru/otus/marchenko/services/QuizletServiceTest.java" afterDir="false" />
-    </list>
+    <list default="true" id="71159750-2f22-4dba-8e4c-3db3675cf31b" name="Changes" comment="add Answer, add IOService, change dao" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -30,6 +26,20 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "ElenMar4"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="b8a1fe31-5a61-4237-a42d-e91e954773fc" />
+        <option name="url" value="https://github.com/ElenMar4/2023-09-otus-spring-marchenko.git" />
+      </UrlAndAccount>
+    </option>
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
