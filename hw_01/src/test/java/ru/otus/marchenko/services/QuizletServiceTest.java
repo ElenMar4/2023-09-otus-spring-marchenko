@@ -39,7 +39,7 @@ class QuizletServiceTest {
     @Test
     @DisplayName("корректно обрабатывает текст вопроса")
     void takeTextQuestion() {
-        assertEquals("1+1 = ", quizletService.takeTextQuestionToString(quizCard));
+        assertEquals("1+1 = ", quizletService.takeTextQuestionAsString(quizCard));
     }
 
     @Test

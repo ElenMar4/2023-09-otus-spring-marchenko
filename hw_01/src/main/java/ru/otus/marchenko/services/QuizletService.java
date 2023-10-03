@@ -19,14 +19,14 @@ public class QuizletService {
     public void startQuizlet() {
         List<QuizCard> quizCardList = dao.getAll();
         for (QuizCard card : quizCardList) {
-            ioService.println(takeTextQuestionToString(card));
+            ioService.println(takeTextQuestionAsString(card));
             ioService.println(takeAnswerChoicesAsString(card));
             ioService.println("\n Right answer: ");
             ioService.println(takeRightAnswerAsString(card) + "\n");
         }
     }
 
-    public String takeTextQuestionToString(QuizCard quizCard) {
+    public String takeTextQuestionAsString(QuizCard quizCard) {
         return quizCard.getTextQuestion();
     }
 
