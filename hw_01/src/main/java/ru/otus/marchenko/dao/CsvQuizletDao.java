@@ -9,17 +9,15 @@ import java.util.List;
 
 public class CsvQuizletDao implements QuizletDao {
 
-    private final List<QuizCard> quizCardList;
     private static String fileName;
 
     public CsvQuizletDao(String fileName) {
         CsvQuizletDao.fileName = fileName;
-        this.quizCardList = parse();
     }
 
     @Override
     public List<QuizCard> getAll() {
-        return quizCardList;
+        return  parse();
     }
 
     public static List<QuizCard> parse() {

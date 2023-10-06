@@ -13,11 +13,10 @@ public class QuizCard {
     }
 
     public Answer getRightAnswer() {
-        Answer rightAnswer = answerChoices.stream().filter(Answer::isRight).findFirst().orElse(null);
-        if (rightAnswer == null) {
-            throw new NullPointerException("Empty value in rightAnswer");
-        }
-        return rightAnswer;
+        return answerChoices.stream()
+                .filter(Answer::isRight)
+                .findFirst()
+                .orElse(null);
     }
 
     public String getTextQuestion() {
