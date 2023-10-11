@@ -30,7 +30,7 @@ public class CsvQuestionDao implements QuestionDao {
                                                         Objects.requireNonNull(inputStream),
                                                         StandardCharsets.UTF_8
                                                     );
-             BufferedReader reader = new BufferedReader(inputStreamReader);
+             BufferedReader reader = new BufferedReader(inputStreamReader)
         ) {
             List<QuestionDto> questionDtoList ;
                     CsvToBean toBean = new CsvToBeanBuilder(reader)
