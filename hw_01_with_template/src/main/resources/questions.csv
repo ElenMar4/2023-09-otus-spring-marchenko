@@ -1,0 +1,5 @@
+What color is a lemon?;orange%false|yellow%true|green%false
+What color is an orange?;orange%true|yellow%false|green%false
+What color is a cucumber?;orange%false|yellow%false|green%true
+What color carrots are?;orange%true|yellow%false|green%false
+What color is a banana?;orange%false|yellow%true|green%false
