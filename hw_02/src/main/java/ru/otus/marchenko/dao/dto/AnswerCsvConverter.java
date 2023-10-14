@@ -1,9 +1,7 @@
 package ru.otus.marchenko.dao.dto;
 
 import com.opencsv.bean.AbstractCsvConverter;
-import org.springframework.stereotype.Component;
 import ru.otus.marchenko.domain.Answer;
-
 
 public class AnswerCsvConverter extends AbstractCsvConverter {
 

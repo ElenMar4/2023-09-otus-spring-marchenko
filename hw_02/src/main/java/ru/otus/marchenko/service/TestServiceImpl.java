@@ -27,24 +27,17 @@ public class TestServiceImpl implements TestService {
                     question.answers().get(1).text(),
                     question.answers().get(2).text());
             String studentAnswer;
-            boolean isValidEnter;
-            do {
-                ioService.printLine("Enter number your answer:");
-                studentAnswer = ioService.readString();
-                isValidEnter = isValidEnter(studentAnswer, question.answers().size());
-            } while (!isValidEnter);
-            int numberAnswer = Integer.parseInt(studentAnswer) - 1;
-            var isAnswerValid = question.answers().get(numberAnswer).isCorrect();
+            ioService.printLine("Enter number your answer:");
+            studentAnswer = ioService.readString();
+            int countAnswers = question.answers().size();
+            int numberAnswer = ioService.readIntForRangeWithPrompt(
+                    0,
+                    countAnswers + 1,
+                    studentAnswer,
+                    "Your enter is not valid. Please enter a number from a range: [1 - " + countAnswers + "]");
+            boolean isAnswerValid = question.answers().get(numberAnswer).isCorrect();
             testResult.applyAnswer(question, isAnswerValid);
         }
         return testResult;
-    }
-
-    public boolean isValidEnter(String studentAnswer, int countRangeAnswers) {
-        if (!(studentAnswer.isEmpty()) && (studentAnswer.matches("[1-3]"))) {
-            return true;
-        }
-        ioService.printLine("Your enter is not valid. Please enter a number from a range: [1 - " + countRangeAnswers + "]");
-        return false;
     }
 }

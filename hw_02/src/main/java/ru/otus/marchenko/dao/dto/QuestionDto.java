@@ -3,7 +3,6 @@ package ru.otus.marchenko.dao.dto;
 import com.opencsv.bean.CsvBindAndSplitByPosition;
 import com.opencsv.bean.CsvBindByPosition;
 import lombok.Data;
-import org.springframework.stereotype.Component;
 import ru.otus.marchenko.domain.Answer;
 import ru.otus.marchenko.domain.Question;
 
