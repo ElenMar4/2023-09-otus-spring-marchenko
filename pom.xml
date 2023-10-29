@@ -15,5 +15,6 @@
         <module>hw_01_with_template</module>
         <module>hw_02</module>
         <module>hw_03</module>
+        <module>hw_04_spring_shell</module>
     </modules>
 </project>
