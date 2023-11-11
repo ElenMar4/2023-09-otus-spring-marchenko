@@ -16,5 +16,6 @@
         <module>hw_02</module>
         <module>hw_03</module>
         <module>hw_04_spring_shell</module>
+        <module>hw_05_spring_jdbc</module>
     </modules>
 </project>
