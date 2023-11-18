@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.otus.marchenko.models.Author;
@@ -24,7 +25,7 @@ import static java.util.stream.Collectors.*;
 
 @Repository
 @RequiredArgsConstructor
-public class BookRepositoryJdbc implements BookRepository {
+public class JdbcBookRepository implements BookRepository {
 
     private final GenreRepository genreRepository;
     private final NamedParameterJdbcOperations namedParameterJdbcOperations;
@@ -61,7 +62,7 @@ public class BookRepositoryJdbc implements BookRepository {
 
     @Override
     public Book save(Book book) {
-        if (book.getId() == 0) {
+        if (book.getId() == null) {
             return insert(book);
         }
         return update(book);
@@ -71,9 +72,6 @@ public class BookRepositoryJdbc implements BookRepository {
     public void deleteById(long id) {
         removeGenresRelationsFor(id);
         namedParameterJdbcOperations.update("delete from books where id = :id", Map.of("id", id));
-        var x = findById(id);
-
-        var t = 0;
     }
 
     private List<Book> getAllBooksWithoutGenres() {
@@ -85,7 +83,14 @@ public class BookRepositoryJdbc implements BookRepository {
 
     private List<BookGenreRelation> getAllGenreRelations() {
         return namedParameterJdbcOperations.query("select book_id, genre_id from books_genres",
-                (rs, rowNum) -> new BookGenreRelation(rs.getLong("book_id"), rs.getLong("genre_id")));
+                rs -> {
+                    List<BookGenreRelation> list = new ArrayList<>();
+                    while (rs.next()){
+                        list.add(new BookGenreRelation(rs.getLong("book_id"), rs.getLong("genre_id")));
+                    }
+                    return list;
+                }
+        );
     }
 
     private void mergeBooksInfo(List<Book> booksWithoutGenres, List<Genre> genres,
@@ -132,10 +137,12 @@ public class BookRepositoryJdbc implements BookRepository {
     }
 
     private void batchInsertGenresRelationsFor(Book book) {
-        for (Genre genre : book.getGenres()) {
-            namedParameterJdbcOperations.update("insert into books_genres (book_id, genre_id) values (:book_id, :genre_id)",
-                    Map.of("book_id", book.getId(), "genre_id", genre.getId()));
+        List<BookGenreRelation> relations = new ArrayList<>();
+        for (Genre genre : book.getGenres()){
+            relations.add(new BookGenreRelation(book.getId(), genre.getId()));
         }
+        namedParameterJdbcOperations.batchUpdate("insert into books_genres set book_id = :bookId, genre_id = :genreId",
+                SqlParameterSourceUtils.createBatch(relations));
     }
 
     private void removeGenresRelationsFor(Long book_id) {

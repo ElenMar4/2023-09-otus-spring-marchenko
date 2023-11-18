@@ -11,18 +11,18 @@ import org.springframework.context.annotation.Import;
 import ru.otus.marchenko.models.Genre;
 
 import java.util.List;
-import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DisplayName("Репозиторий на основе Jdbc для работы с жанрами ")
 @JdbcTest
-@Import({GenreRepositoryJdbc.class})
+@Import({JdbcGenreRepository.class})
 class GenreRepositoryJdbcTest {
 
     @Autowired
-    private GenreRepositoryJdbc genreRepositoryJdbc;
+    private JdbcGenreRepository genreRepositoryJdbc;
 
     private List<Genre> dbGenres;
 
@@ -51,7 +51,7 @@ class GenreRepositoryJdbcTest {
     }
 
     private static List<Genre> getDbGenres() {
-        return IntStream.range(1, 7).boxed()
+        return LongStream.range(1, 7).boxed()
                 .map(id -> new Genre(id, "Genre_" + id))
                 .toList();
     }
