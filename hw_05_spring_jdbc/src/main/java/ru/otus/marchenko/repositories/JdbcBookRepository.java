@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -33,21 +32,19 @@ public class JdbcBookRepository implements BookRepository {
     @Override
     public Optional<Book> findById(long id) {
         Book result;
+        SqlParameterSource paramSource = new MapSqlParameterSource("id", id);
         try {
-            result = namedParameterJdbcOperations.queryForObject(
-                    "select books.id, books.title, books.author_id, authors.full_name " +
-                            "from books join authors on books.author_id = authors.id " +
-                            "where books.id = :id",
-                    Map.of("id", id),
-                    new BookRowMapper());
+            result = namedParameterJdbcOperations.query(
+                    "select b.id as book_id, b.title as title, b.author_id as author_id, " +
+                            "a.full_name as full_name, g.id as genre_id, g.name as genre_name " +
+                            "from books b " +
+                            "left join books_genres r on r.book_id = b.id " +
+                            "left join genres g on g.id = r.genre_id " +
+                            "join authors a on b.author_id = a.id " +
+                            "where b.id = :id", paramSource, new BookWithGenresExtractor());
         } catch (EmptyResultDataAccessException ex) {
             return Optional.empty();
         }
-        var relations = getAllGenreRelations();
-        Map<Long, List<Long>> relationsMap = relations.stream().collect(groupingBy(BookGenreRelation::bookId,
-                mapping(BookGenreRelation::genreId, toList())));
-        var genresById = genreRepository.findAllByIds(relationsMap.get(id));
-        result.setGenres(genresById);
         return Optional.of(result);
     }
 
@@ -85,7 +82,7 @@ public class JdbcBookRepository implements BookRepository {
         return namedParameterJdbcOperations.query("select book_id, genre_id from books_genres",
                 rs -> {
                     List<BookGenreRelation> list = new ArrayList<>();
-                    while (rs.next()){
+                    while (rs.next()) {
                         list.add(new BookGenreRelation(rs.getLong("book_id"), rs.getLong("genre_id")));
                     }
                     return list;
@@ -138,7 +135,7 @@ public class JdbcBookRepository implements BookRepository {
 
     private void batchInsertGenresRelationsFor(Book book) {
         List<BookGenreRelation> relations = new ArrayList<>();
-        for (Genre genre : book.getGenres()){
+        for (Genre genre : book.getGenres()) {
             relations.add(new BookGenreRelation(book.getId(), genre.getId()));
         }
         namedParameterJdbcOperations.batchUpdate("insert into books_genres set book_id = :bookId, genre_id = :genreId",
@@ -149,14 +146,26 @@ public class JdbcBookRepository implements BookRepository {
         namedParameterJdbcOperations.update("delete from books_genres where book_id = :id", Map.of("id", book_id));
     }
 
-    private static class BookRowMapper implements RowMapper<Book> {
+    private static class BookWithGenresExtractor implements ResultSetExtractor<Book> {
 
         @Override
-        public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
-            long id = rs.getLong("books.id");
-            String title = rs.getString("books.title");
-            Author author = new Author(rs.getLong("books.author_id"), rs.getString("authors.full_name"));
-            return new Book(id, title, author, null);
+        public Book extractData(ResultSet rs) throws SQLException, DataAccessException {
+            long authorId = 0;
+            String authorFullName = null;
+            long bookId = 0;
+            String bookTitle = null;
+            List<Genre> genres = new ArrayList<>();
+            while (rs.next()) {
+                authorId = rs.getLong("author_id");
+                authorFullName = rs.getString("full_name");
+                bookId = rs.getLong("book_id");
+                bookTitle = rs.getString("title");
+                genres.add(new Genre(rs.getLong("genre_id"), rs.getString("genre_name")));
+            }
+            if (bookId == 0 & bookTitle == null){
+                throw new EmptyResultDataAccessException(0);
+            }
+            return new Book(bookId, bookTitle, new Author(authorId, authorFullName), genres);
         }
     }
 
@@ -176,7 +185,6 @@ public class JdbcBookRepository implements BookRepository {
             return listBook;
         }
     }
-
 
     private record BookGenreRelation(long bookId, long genreId) {
     }

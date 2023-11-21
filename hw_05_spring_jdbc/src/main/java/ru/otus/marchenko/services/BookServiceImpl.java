@@ -56,9 +56,6 @@ public class BookServiceImpl implements BookService {
             throw new NotFoundException("Genres list for book is empty");
         }
         var genres = genreRepository.findAllByIds(genresIds);
-        if (isEmpty(genres)) {
-            throw new NotFoundException("Genres with ids %s not found".formatted(genresIds));
-        }
         if(genresIds.size() != genres.size()){
             throw new NotFoundException("Not all ids %s found entity".formatted(genresIds));
         }
