@@ -32,14 +32,26 @@ public class CommentCommands {
                 .orElse("Author with id %d not found".formatted(id));
     }
 
-    //ac  1  ddddd ddd sdsd ddd
+    //cins  1  ddddd,ddd,sdsd,ddd
     @ShellMethod(value = "Add comment for Book", key = "cins")
     public String addCommentByBook (Long bookId, Set<String> text){
         String message = String.join(" ", text);
         Comment newComment = commentService.insert(bookId, message);
-        return String.format("New comment save: %s", commentConverter.commentToString(newComment));
+        return newComment == null ? "Comment not save" : String.format(
+                "New comment save: %s", commentConverter.commentToString(newComment));
     }
 
+    //cupd  1  aaaa,jjjjjj
+    @ShellMethod(value = "Update comment", key = "cupd")
+    public String updateComment(Long commentId, Set<String> newText){
+        String newMessage = String.join(" ", newText);
+        Comment newComment = commentService.update(commentId, newMessage);
+        return newText == null ?
+                String.format("Comment with id: %d not found", commentId)
+                : String.format("New comment save: %s", commentConverter.commentToString(newComment));
+    }
+
+    //cdel 10
     @ShellMethod(value = "Delete comment by id", key = "cdel")
     public String deleteCommentById (Long id){
         Comment deleteComment = commentService.deleteById(id);

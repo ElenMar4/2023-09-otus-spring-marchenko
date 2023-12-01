@@ -19,14 +19,10 @@ public class JpaAuthorRepository implements AuthorRepository {
     private final EntityManager em;
 
     @Override
-    public List<Author> findAll() {
-        return em.createQuery("select a from Author a", Author.class).getResultList();
-    }
+    public List<Author> findAll() { return em.createQuery("select a from Author a", Author.class).getResultList();}
 
     @Override
-    public Optional<Author> findById(long id) {
-        return Optional.ofNullable(em.find(Author.class, id));
-    }
+    public Optional<Author> findById(long id) { return Optional.ofNullable(em.find(Author.class, id));}
 
     @Override
     public Optional<Author> findByName(String name) {
@@ -39,14 +35,19 @@ public class JpaAuthorRepository implements AuthorRepository {
 
     @Override
     public Author save(Author author) {
-        em.persist(author);
+        if(author.getId() == null) {
+            em.persist(author);
+        }else em.merge(author);
         return author;
     }
 
     @Override
     public Author deleteById(long id) {
-        Author author = findById(id).orElseThrow(() -> new EntityNotFoundException("Author not found"));
-        em.remove(author);
+        Author author = Optional.ofNullable(em.find(Author.class, id))
+                .orElseThrow(() -> new EntityNotFoundException("Author not found"));
+        if(author !=null) {
+            em.remove(author);
+        }
         return author;
     }
 }

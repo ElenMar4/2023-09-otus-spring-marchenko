@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,18 +22,15 @@ public class JpaGenreRepository implements GenreRepository {
     private final EntityManager em;
 
     @Override
-    public List<Genre> findAll() {
-        return em.createQuery("select g from Genre g", Genre.class).getResultList();
-    }
+    public List<Genre> findAll() { return em.createQuery("select g from Genre g", Genre.class).getResultList();}
 
     @Override
-    public Optional<Genre> findById(long id) {
-        return Optional.ofNullable(em.find(Genre.class, id));
-    }
+    public Optional<Genre> findById(long id) { return Optional.ofNullable(em.find(Genre.class, id));}
 
     @Override
     public List<Genre> findAllByIds(Set<Long> ids) {
         List<Genre> genres = new ArrayList<>();
+        ids = ids.stream().unordered().collect(Collectors.toSet());
         for (long id : ids) {
             genres.add(em.find(Genre.class, id));
         }
@@ -50,14 +48,19 @@ public class JpaGenreRepository implements GenreRepository {
 
     @Override
     public Genre save(Genre genre) {
-        em.persist(genre);
+        if(genre.getId() == null) {
+            em.persist(genre);
+        } else em.merge(genre);
         return genre;
     }
 
     @Override
     public Genre deleteById(long id) {
-        Genre genre = findById(id).orElseThrow(() -> new EntityNotFoundException("Genre not found"));
-        em.remove(genre);
+        Genre genre = Optional.ofNullable(em.find(Genre.class, id))
+                .orElseThrow(() -> new EntityNotFoundException("Genre not found"));
+        if(genre != null){
+            em.remove(genre);
+        }
         return genre;
     }
 }

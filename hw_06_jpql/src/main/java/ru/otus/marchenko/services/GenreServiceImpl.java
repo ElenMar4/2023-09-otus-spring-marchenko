@@ -16,21 +16,27 @@ public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository genreRepository;
 
+    @Transactional(readOnly = true)
     @Override
-    public List<Genre> findAll() {
-        return genreRepository.findAll();
-    }
+    public List<Genre> findAll() { return genreRepository.findAll();}
 
+    @Transactional(readOnly = true)
     @Override
-    public Optional<Genre> findById(long id) {
-        return genreRepository.findById(id);
-    }
+    public Optional<Genre> findById(long id) { return genreRepository.findById(id);}
 
     @Transactional
     @Override
-    public Genre insert(String genreName) {
-        Optional<Genre> genre = genreRepository.findByName(genreName);
-        return genre.orElseGet(() -> genreRepository.save(new Genre(null, genreName)));
+    public Genre insert(String genreName) { return genreRepository.save(new Genre(null, genreName)); }
+
+    @Transactional
+    @Override
+    public Genre update(long id, String newGenreName) {
+        Genre genre = findById(id).orElseThrow(() -> new EntityNotFoundException("Genre not found"));
+        if (genre != null){
+            genre.setName(newGenreName);
+            return genreRepository.save(genre);
+        }
+        return null;
     }
 
     @Transactional

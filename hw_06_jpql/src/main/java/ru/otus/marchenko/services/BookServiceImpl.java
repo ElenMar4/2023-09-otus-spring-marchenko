@@ -27,22 +27,17 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final CommentService commentService;
 
+    @Transactional(readOnly = true)
     @Override
-    public List<Book> findAll() {
-        return bookRepository.findAll();
-    }
+    public List<Book> findAll() { return bookRepository.findAll();}
 
+    @Transactional(readOnly = true)
     @Override
-    public Optional<Book> findById(long id) {
-        return bookRepository.findById(id);
-    }
+    public Optional<Book> findById(long id) { return bookRepository.findById(id);}
 
     @Transactional
     @Override
-    public Book insert(String title, Long authorId, Set<Long> genresIds) {
-        Optional<Book> book = bookRepository.findCopyByTitleAndAuthor(title, authorId);
-        return book.orElseGet(() -> save(null, title, authorId, genresIds));
-    }
+    public Book insert(String title, Long authorId, Set<Long> genresIds) { return save(null, title, authorId, genresIds);}
 
     @Transactional
     @Override
@@ -54,9 +49,7 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public void deleteById(long id) {
-        bookRepository.deleteById(id);
-    }
+    public void deleteById(long id) {bookRepository.deleteById(id);}
 
     private Book save(Long id, String title, Long authorId, Set<Long> genresIds) {
 
@@ -72,7 +65,5 @@ public class BookServiceImpl implements BookService {
         return bookRepository.save(book);
     }
 
-    public List<Comment> findCommentsByBook(long bookId) {
-        return commentService.findAllByBookId(bookId);
-    }
+    public List<Comment> findCommentsByBook(long bookId) { return commentService.findAllByBookId(bookId);}
 }

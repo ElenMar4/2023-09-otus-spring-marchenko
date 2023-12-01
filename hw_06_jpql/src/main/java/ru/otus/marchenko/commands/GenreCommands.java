@@ -37,6 +37,14 @@ public class GenreCommands {
         return String.format("New genre save into base: %s", genreConverter.genreToString(saveGenre));
     }
 
+    @ShellMethod(value = "Update genre name", key = "gupd")
+    public String updateGenre(long id, String newName){
+        Genre genre = genreService.update(id, newName);
+        return genre == null ?
+                String.format("Genre with id = %d not found", id)
+                : String.format("Genre update: %s", genreConverter.genreToString(genre));
+    }
+
     @ShellMethod(value = "Remove genre out base", key = "gdel")
     public String removeGenreById (long id){
         Genre removeGenre = genreService.deleteById(id);

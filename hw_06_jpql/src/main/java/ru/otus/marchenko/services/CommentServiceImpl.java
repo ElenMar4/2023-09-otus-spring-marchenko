@@ -19,17 +19,14 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final BookRepository bookRepository;
 
+    @Transactional(readOnly = true)
     @Override
-    public Optional<Comment> findById(long id) {
-        return commentRepository.findById(id);
-    }
+    public Optional<Comment> findById(long id) { return commentRepository.findById(id);}
 
+    @Transactional(readOnly = true)
     @Override
     public List<Comment> findAllByBookId(Long bookId) {
-        Optional<Book> book = bookRepository.findById(bookId);
-        if (book.isEmpty()) {
-            throw new EntityNotFoundException("Book not found");
-        }
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found"));
         return commentRepository.findAllByBookId(bookId);
     }
 
@@ -38,7 +35,22 @@ public class CommentServiceImpl implements CommentService {
     public Comment insert(long bookId, String message) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Book with id = %s not found", bookId)));
-        return commentRepository.save(new Comment(null, message, book));
+        if(book !=null){
+            return commentRepository.save(new Comment(null, message, book));
+        }
+        return null;
+    }
+
+    @Transactional
+    @Override
+    public Comment update(long commentId, String message) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
+        if (comment != null){
+            comment.setMessage(message);
+            return commentRepository.save(comment);
+        }
+        return null;
     }
 
     @Transactional

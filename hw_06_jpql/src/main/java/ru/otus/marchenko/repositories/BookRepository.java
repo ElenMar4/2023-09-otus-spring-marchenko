@@ -11,7 +11,7 @@ public interface BookRepository {
 
     Optional<Book> findById(long id);
 
-    Optional<Book> findCopyByTitleAndAuthor(String title, Long authorId);
+    Optional<Book> findByTitleAndAuthor(String title, Long authorId);
 
     Book save(Book book);
 

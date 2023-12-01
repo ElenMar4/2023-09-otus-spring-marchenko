@@ -19,9 +19,7 @@ public class JpaCommentRepository implements CommentRepository {
     private final EntityManager em;
 
     @Override
-    public Optional<Comment> findById(long id) {
-        return Optional.ofNullable(em.find(Comment.class, id));
-    }
+    public Optional<Comment> findById(long id) { return Optional.ofNullable(em.find(Comment.class, id));}
 
     @Override
     public List<Comment> findAllByBookId(long bookId) {
@@ -34,13 +32,18 @@ public class JpaCommentRepository implements CommentRepository {
 
     @Override
     public Comment save(Comment comment) {
-        em.persist(comment);
+        if(comment.getId() == null) {
+            em.persist(comment);
+        }else em.merge(comment);
         return comment;
     }
 
     @Override
     public void deleteById(long id) {
-        Comment comment = findById(id).orElseThrow(() -> new EntityNotFoundException("Comment not found"));
-        em.remove(comment);
+        Comment comment = Optional.ofNullable(em.find(Comment.class, id))
+                .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
+        if(comment != null){
+            em.remove(comment);
+        }
     }
 }

@@ -38,6 +38,12 @@ public class AuthorCommands {
 
     }
 
+    @ShellMethod(value = "Update author name", key = "aupd")
+    public String updateAuthor(long id, String newName){
+        Author updateAuthor = authorService.update(id, newName);
+        return String.format("Author update into base: %s", authorConverter.authorToString(updateAuthor));
+    }
+
     @ShellMethod(value = "Remove author out base", key = "adel")
     public String removeAuthorById (long id){
         Author removeAuthor = authorService.deleteById(id);
