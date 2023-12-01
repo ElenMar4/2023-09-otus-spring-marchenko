@@ -26,15 +26,11 @@ public class Book {
     @JoinColumn(name = "author_id")
     private Author author;
     
-    @ManyToMany(targetEntity = Genre.class, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToMany(targetEntity = Genre.class, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "books_genres", joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private List<Genre> genres;
 
-//    @OneToMany(targetEntity = Comment.class, mappedBy = "book", cascade = CascadeType.ALL,
-//            orphanRemoval = true, fetch = FetchType.LAZY)
-//    private List<Comment> comments;
-//
     public Book(Long id, String title, Author author, List<Genre> genres) {
         this.id = id;
         this.title = title;

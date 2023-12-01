@@ -7,10 +7,10 @@ spring:
   sql:
     init:
       mode: always
-      data-locations: data.sql
+      data-locations: test-data.sql
       schema-locations: schema.sql
   jpa:
-    generate-ddl: true
+    generate-ddl: false
     hibernate:
       ddl-auto: none
     show-sql: true

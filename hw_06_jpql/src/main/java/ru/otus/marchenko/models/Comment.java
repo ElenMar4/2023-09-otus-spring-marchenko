@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -16,6 +15,7 @@ public class Comment {
     @Column(name = "comment_id")
     private Long id;
 
+    @Setter
     @Column(name = "message", nullable = false, unique = true)
     private String message;
 
