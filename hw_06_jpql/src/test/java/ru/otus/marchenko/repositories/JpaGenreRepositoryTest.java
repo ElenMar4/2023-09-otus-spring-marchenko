@@ -74,7 +74,7 @@ class JpaGenreRepositoryTest {
                 .isEqualTo(expectedGenre);
     }
 
-    @DisplayName(" должен корректно сохранять всю информацию о жанре")
+    @DisplayName(" должен корректно сохранять всю информацию о новом жанре жанре")
     @Test
     void shouldSaveAllGenreInfo() {
         Genre genre = new Genre(null, NEW_GENRE_NAME);
@@ -93,5 +93,19 @@ class JpaGenreRepositoryTest {
         genreRepository.deleteById(FIRST_GENRE_ID);
         Genre deletedGenres = em.find(Genre.class, FIRST_GENRE_ID);
         assertThat(deletedGenres).isNull();
+    }
+
+    @DisplayName(" должен изменять имя у жанра по id")
+    @Test
+    void shouldUpdateGenreNameById(){
+        Genre firstGenre = em.find(Genre.class, FIRST_GENRE_ID);
+        String oldName = firstGenre.getName();
+        em.detach(firstGenre);
+        firstGenre.setName(NEW_GENRE_NAME);
+        genreRepository.save(firstGenre);
+        Genre updateGenre = em.find(Genre.class, FIRST_GENRE_ID);
+        assertThat(updateGenre.getName())
+                .isNotEqualTo(oldName)
+                .isEqualTo(NEW_GENRE_NAME);
     }
 }

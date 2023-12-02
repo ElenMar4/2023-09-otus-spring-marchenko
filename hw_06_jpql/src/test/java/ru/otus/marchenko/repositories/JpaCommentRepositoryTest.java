@@ -74,4 +74,18 @@ class JpaCommentRepositoryTest {
         Comment deletedComment = em.find(Comment.class, FIRST_COMMENT_ID);
         assertThat(deletedComment).isNull();
     }
+
+    @DisplayName(" должен изменять текст комметария по id")
+    @Test
+    void shouldUpdateCommentMessageById() {
+        Comment firstComment = em.find(Comment.class, FIRST_COMMENT_ID);
+        String oldMessage = firstComment.getMessage();
+        em.detach(firstComment);
+        firstComment.setMessage(NEW_COMMENT_MESSAGE);
+        commentRepository.save(firstComment);
+        Comment updateComment = em.find(Comment.class, FIRST_COMMENT_ID);
+        assertThat(updateComment.getMessage())
+                .isNotEqualTo(oldMessage)
+                .isEqualTo(NEW_COMMENT_MESSAGE);
+    }
 }

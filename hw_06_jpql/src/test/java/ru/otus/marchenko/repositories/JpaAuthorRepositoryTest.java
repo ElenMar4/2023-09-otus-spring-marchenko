@@ -81,4 +81,18 @@ class JpaAuthorRepositoryTest {
         Author deletedAuthor = em.find(Author.class, FIRST_AUTHOR_ID);
         assertThat(deletedAuthor).isNull();
     }
+
+    @DisplayName(" должен изменять имя у автора по id")
+    @Test
+    void shouldUpdateAuthorNameById(){
+        Author firstAuthor = em.find(Author.class, FIRST_AUTHOR_ID);
+        String oldName = firstAuthor.getFullName();
+        em.detach(firstAuthor);
+        firstAuthor.setFullName(NEW_AUTHOR_FULL_NAME);
+        authorRepository.save(firstAuthor);
+        Author updateAuthor = em.find(Author.class, FIRST_AUTHOR_ID);
+        assertThat(updateAuthor.getFullName())
+                .isNotEqualTo(oldName)
+                .isEqualTo(NEW_AUTHOR_FULL_NAME);
+    }
 }
