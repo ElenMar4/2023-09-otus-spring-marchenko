@@ -45,9 +45,9 @@ public class GenreCommands {
                 : String.format("Genre update: %s", genreConverter.genreToString(genre));
     }
 
-    @ShellMethod(value = "Remove genre out base", key = "gdel")
-    public String removeGenreById (long id){
-        Genre removeGenre = genreService.deleteById(id);
-        return String.format("Genre remove out base: %s", genreConverter.genreToString(removeGenre));
+    @ShellMethod(value = "Delete genre out base", key = "gdel")
+    public String deleteGenreById (long id){
+        genreService.deleteById(id);
+        return "Genre delete";
     }
 }

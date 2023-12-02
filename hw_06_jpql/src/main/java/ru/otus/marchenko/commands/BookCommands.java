@@ -36,29 +36,30 @@ public class BookCommands {
                 .orElse("Book with id %d not found".formatted(id));
     }
 
+    @ShellMethod(value = "Find book with comments by id", key = "bc")
+    public String findBookWhithCommentsByBookId(long id){
+        List<Comment> comments = bookService.findCommentsByBook(id);
+        Optional<Book> book = bookService.findById(id);
+        return bookConverter.bookWithCommentsToString(book.get(), comments);
+    }
+
     // bins newBook 1 1,6
     @ShellMethod(value = "Insert book", key = "bins")
     public String insertBook(String title, long authorId, Set<Long> genresIds) {
         var savedBook = bookService.insert(title, authorId, genresIds);
-        return bookConverter.bookToString(savedBook);
+        return String.format("New author save into base: %s", bookConverter.bookToString(savedBook));
     }
 
     // bupd 4 editedBook 3 2,5
     @ShellMethod(value = "Update book", key = "bupd")
     public String updateBook(long id, String title, long authorId, Set<Long> genresIds) {
         var savedBook = bookService.update(id, title, authorId, genresIds);
-        return bookConverter.bookToString(savedBook);
+        return String.format("Book update into base: %s", bookConverter.bookToString(savedBook));
     }
 
     @ShellMethod(value = "Delete book by id", key = "bdel")
-    public void updateBook(long id) {
+    public String deleteBook(long id) {
         bookService.deleteById(id);
-    }
-
-    @ShellMethod(value = "Find book with comments by id", key = "bc")
-    public String findBookWhithCommentsByBookId(long id){
-        List<Comment> comments = bookService.findCommentsByBook(id);
-        Optional<Book> book = bookService.findById(id);
-        return bookConverter.bookWithCommentsToString(book.get(), comments);
+        return "Book delete";
     }
 }

@@ -30,18 +30,14 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     @Override
     public Author update(long id, String newAuthorName) {
-        Optional<Author> author = authorRepository.findById(id);
-        if(author.isPresent()){
-            author.get().setFullName(newAuthorName);
-            return authorRepository.save(author.get());
-        }else return authorRepository.save(new Author(null, newAuthorName));
+        Author author = authorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Author not found"));
+            author.setFullName(newAuthorName);
+            return authorRepository.save(author);
     }
 
     @Transactional
     @Override
-    public Author deleteById(long id) {
-        Author removeAuthor = authorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Author not found"));
+    public void deleteById(long id) {
         authorRepository.deleteById(id);
-        return removeAuthor;
     }
 }

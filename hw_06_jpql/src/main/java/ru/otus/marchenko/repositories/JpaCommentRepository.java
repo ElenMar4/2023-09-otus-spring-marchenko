@@ -40,8 +40,7 @@ public class JpaCommentRepository implements CommentRepository {
 
     @Override
     public void deleteById(long id) {
-        Comment comment = Optional.ofNullable(em.find(Comment.class, id))
-                .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
+        Comment comment = em.find(Comment.class, id);
         if(comment != null){
             em.remove(comment);
         }

@@ -42,12 +42,10 @@ public class JpaAuthorRepository implements AuthorRepository {
     }
 
     @Override
-    public Author deleteById(long id) {
-        Author author = Optional.ofNullable(em.find(Author.class, id))
-                .orElseThrow(() -> new EntityNotFoundException("Author not found"));
+    public void deleteById(long id) {
+        Author author = em.find(Author.class, id);
         if(author !=null) {
             em.remove(author);
         }
-        return author;
     }
 }

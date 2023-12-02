@@ -15,5 +15,5 @@ public interface BookRepository {
 
     Book save(Book book);
 
-    Book deleteById(long id);
+    void deleteById(long id);
 }

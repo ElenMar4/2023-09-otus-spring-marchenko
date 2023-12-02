@@ -56,15 +56,10 @@ public class JpaBookRepository implements BookRepository {
     }
 
     @Override
-    public Book deleteById(long id) {
-        EntityGraph<?> entityGraph = em.getEntityGraph("book-author-genres-entity-graph");
-        Map<String, Object> properties = new HashMap<>();
-        properties.put(FETCH.getKey(), entityGraph);
-        Book book = Optional.ofNullable(em.find(Book.class, id, properties))
-                .orElseThrow(() -> new EntityNotFoundException("Book not found"));
-        if(book != null) {
-            em.remove(book);
+    public void deleteById(long id) {
+        Book book = em.find(Book.class, id);
+        if (book != null){
+        em.remove(book);
         }
-        return book;
     }
 }

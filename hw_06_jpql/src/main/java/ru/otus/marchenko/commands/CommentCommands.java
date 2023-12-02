@@ -36,16 +36,16 @@ public class CommentCommands {
     @ShellMethod(value = "Add comment for Book", key = "cins")
     public String addCommentByBook (Long bookId, Set<String> text){
         String message = String.join(" ", text);
-        Comment newComment = commentService.insert(bookId, message);
+        Comment newComment = commentService.insert(null, message, bookId);
         return newComment == null ? "Comment not save" : String.format(
                 "New comment save: %s", commentConverter.commentToString(newComment));
     }
 
     //cupd  1  aaaa,jjjjjj
     @ShellMethod(value = "Update comment", key = "cupd")
-    public String updateComment(Long commentId, Set<String> newText){
+    public String updateComment(Long commentId, Set<String> newText, Long bookId){
         String newMessage = String.join(" ", newText);
-        Comment newComment = commentService.update(commentId, newMessage);
+        Comment newComment = commentService.update(commentId, newMessage, bookId);
         return newText == null ?
                 String.format("Comment with id: %d not found", commentId)
                 : String.format("New comment save: %s", commentConverter.commentToString(newComment));
@@ -54,7 +54,7 @@ public class CommentCommands {
     //cdel 10
     @ShellMethod(value = "Delete comment by id", key = "cdel")
     public String deleteCommentById (Long id){
-        Comment deleteComment = commentService.deleteById(id);
-        return String.format("Comment delete: %s", commentConverter.commentToString(deleteComment));
+        commentService.deleteById(id);
+        return "Comment delete";
     }
 }

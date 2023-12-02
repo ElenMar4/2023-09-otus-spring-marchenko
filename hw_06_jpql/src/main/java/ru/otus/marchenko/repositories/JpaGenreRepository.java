@@ -55,12 +55,10 @@ public class JpaGenreRepository implements GenreRepository {
     }
 
     @Override
-    public Genre deleteById(long id) {
-        Genre genre = Optional.ofNullable(em.find(Genre.class, id))
-                .orElseThrow(() -> new EntityNotFoundException("Genre not found"));
+    public void deleteById(long id) {
+        Genre genre = em.find(Genre.class, id);
         if(genre != null){
             em.remove(genre);
         }
-        return genre;
     }
 }

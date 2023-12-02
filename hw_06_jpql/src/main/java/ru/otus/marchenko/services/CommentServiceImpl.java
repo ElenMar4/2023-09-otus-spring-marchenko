@@ -21,7 +21,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional(readOnly = true)
     @Override
-    public Optional<Comment> findById(long id) { return commentRepository.findById(id);}
+    public Optional<Comment> findById(Long id) { return commentRepository.findById(id);}
 
     @Transactional(readOnly = true)
     @Override
@@ -32,32 +32,33 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional
     @Override
-    public Comment insert(long bookId, String message) {
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Book with id = %s not found", bookId)));
-        if(book !=null){
-            return commentRepository.save(new Comment(null, message, book));
-        }
-        return null;
+    public Comment insert(Long id, String message, Long bookId) {
+            return save(null, message, bookId);
     }
 
     @Transactional
     @Override
-    public Comment update(long commentId, String message) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
-        if (comment != null){
-            comment.setMessage(message);
-            return commentRepository.save(comment);
-        }
-        return null;
+    public Comment update(Long id, String message, Long bookId) {
+        return save(id, message, null);
     }
 
     @Transactional
     @Override
-    public Comment deleteById(long id) {
-        Optional<Comment> comment = commentRepository.findById(id);
+    public void deleteById(long id) {
         commentRepository.deleteById(id);
-        return comment.get();
+    }
+
+    private Comment save (Long id, String message, Long bookId){
+        Comment comment;
+        if (id == null){
+            Book book = bookRepository.findById(bookId)
+                    .orElseThrow(() -> new EntityNotFoundException(String.format("Book with id = %s not found", bookId)));
+            comment = new Comment(null, message, book);
+        } else {
+             comment = commentRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
+             comment.setMessage(message);
+        }
+        return commentRepository.save(comment);
     }
 }

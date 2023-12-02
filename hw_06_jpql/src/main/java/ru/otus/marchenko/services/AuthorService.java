@@ -10,6 +10,6 @@ public interface AuthorService {
     Optional<Author> findBiId(long id);
     Author insert(String authorName);
     Author update(long id, String authorName);
-    Author deleteById(long id);
+    void deleteById(long id);
 
 }
