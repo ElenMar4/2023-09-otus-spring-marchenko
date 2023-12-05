@@ -15,6 +15,6 @@ public class Author {
     private Long id;
 
     @Setter
-    @Column(name = "full_name", nullable = false, unique = true)
+    @Column(name = "full_name", nullable = false)
     private String fullName;
 }
