@@ -19,5 +19,6 @@
         <module>hw_05_spring_jdbc</module>
         <module>hw_06_jpql</module>
         <module>hw_07_spring_data_jpa</module>
+        <module>hw_08_mongoDB</module>
     </modules>
 </project>
