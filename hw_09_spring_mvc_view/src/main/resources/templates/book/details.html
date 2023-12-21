@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Book information with comments</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+<form id="details-form" action="details.html" th:method="get" th:action="@{/book/details(id=${book.id})}" th:object="${book}">
+    <h4>Book Info:</h4>
+
+    <div class="row">
+        <label for="id">ID:</label>
+        <input id="id" type="text" readonly="readonly" th:value="*{id}"/>
+    </div>
+
+    <div class="row">
+        <label for="book-title">Title:</label>
+        <input id="book-title" type="text" readonly="readonly" th:value="*{title}"/>
+    </div>
+
+    <h5>Author:</h5>
+
+    <div class="row">
+        <label for="book-author-id">ID:</label>
+        <input id="book-author-id" type="text" readonly="readonly" th:value="*{author.id}"/>
+    </div>
+
+    <div class="row">
+        <label for="book-author-name">Full name:</label>
+        <input id="book-author-name" type="text" readonly="readonly" th:value="*{author.fullName}"/>
+    </div>
+
+    <h5>Genre:</h5>
+
+    <div class="row">
+        <label for="book-genre-id">ID:</label>
+        <input id="book-genre-id" type="text" readonly="readonly" th:value="*{genre.id}"/>
+    </div>
+
+    <div class="row">
+        <label for="book-genre-name">Name:</label>
+        <input id="book-genre-name" type="text" readonly="readonly" th:value="*{genre.name}"/>
+    </div>
+
+    <div class="row">
+        <a href="edit.html" th:href="@{/book/edit/{id}(id=${book.id})}"><button type="button">EDIT</button></a>
+        <a href="list.html" th:href="@{/book}"><button type="button">CANCEL</button></a>
+        <a href="list.html" th:href="@{/book/delete/{id}(id=${book.id})}"><button type="button">DELETE</button></a>
+        <a href="list.html" th:href="@{/comment/{id}(id=${book.id})}"><button type="button">COMMENTS</button></a>
+    </div>
+</body>
+</html>

@@ -20,5 +20,6 @@
         <module>hw_06_jpql</module>
         <module>hw_07_spring_data_jpa</module>
         <module>hw_08_mongoDB</module>
+        <module>hw_09_spring_mvc_view</module>
     </modules>
 </project>
