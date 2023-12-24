@@ -4,28 +4,37 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.marchenko.dto.genre.GenreCreateDto;
+import ru.otus.marchenko.dto.genre.GenreDto;
+import ru.otus.marchenko.exceptions.NotFoundException;
+import ru.otus.marchenko.mappers.GenreMapper;
 import ru.otus.marchenko.models.Genre;
 import ru.otus.marchenko.repositories.GenreRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository genreRepository;
+    private final GenreMapper genreMapper;
 
     @Transactional(readOnly = true)
     @Override
-    public List<Genre> findAll() { return genreRepository.findAll();}
+    public List<GenreDto> findAll() {
+        List<Genre> genres = genreRepository.findAll();
+        return genres.stream().map(genreMapper::toDto).toList();
+    }
 
     @Transactional(readOnly = true)
     @Override
-    public Optional<Genre> findById(long id) { return genreRepository.findById(id);}
+    public GenreDto findById(long id) {
+        Genre genre = genreRepository.findById(id).orElseThrow(()->new NotFoundException("Genre not found"));
+        return genreMapper.toDto(genre);
+    }
 
     @Transactional
     @Override
-    public void insert(GenreCreateDto genreDto) {
-        genreRepository.save(new Genre(null, genreDto.name())); }
+    public void create(GenreCreateDto genreDto) {
+        genreRepository.save(genreMapper.toModel(genreDto)); }
 }

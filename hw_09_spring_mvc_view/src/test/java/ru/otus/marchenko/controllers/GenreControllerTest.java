@@ -40,6 +40,6 @@ class GenreControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:../book/add"));
 
-        verify(genreService).insert(eq(new GenreCreateDto("Classic")));
+        verify(genreService).create(eq(new GenreCreateDto("Classic")));
     }
 }

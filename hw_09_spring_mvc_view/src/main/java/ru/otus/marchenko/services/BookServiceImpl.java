@@ -6,7 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.marchenko.dto.book.BookDto;
 import ru.otus.marchenko.dto.book.BookUpdateDto;
 import ru.otus.marchenko.dto.book.BookCreateDto;
-import ru.otus.marchenko.exceptions.EntityNotFoundException;
+import ru.otus.marchenko.exceptions.NotFoundException;
+import ru.otus.marchenko.mappers.BookMapper;
 import ru.otus.marchenko.models.Author;
 import ru.otus.marchenko.models.Book;
 import ru.otus.marchenko.models.Genre;
@@ -20,50 +21,35 @@ import java.util.List;
 @Service
 public class BookServiceImpl implements BookService {
 
+    private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
-    private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
 
     @Transactional(readOnly = true)
     @Override
     public List<BookDto> findAll() {
-        return bookRepository.findAll().stream().map(BookDto::new).toList();
+        return bookRepository.findAll().stream().map(bookMapper::toDto).toList();
     }
 
     @Transactional(readOnly = true)
     @Override
     public BookDto findById(long id) {
-        return bookRepository.findById(id).map(BookDto::new).orElseThrow(() -> new EntityNotFoundException("book not found"));
+        Book book = bookRepository.findById(id).orElseThrow(()->new NotFoundException("Book not found"));
+        return bookMapper.toDto(book);
     }
 
     @Transactional
     @Override
-    public void insert(BookCreateDto bookDto) {
-        Author author = authorRepository.findByFullName(bookDto.authorName())
-                .orElseThrow(EntityNotFoundException::new);
-        Genre genre = genreRepository.findByName(bookDto.genreName())
-                .orElseThrow(EntityNotFoundException::new);
-        bookRepository.save(new Book(null, bookDto.title(), author, genre));
+    public void create(BookCreateDto bookDto) {
+        Book book = composeBook(bookMapper.toModel(bookDto), bookDto.authorId(), bookDto.genreId());
+        bookRepository.save(book);
     }
 
     @Transactional
     @Override
     public void update(BookUpdateDto bookDto) {
-        Book book = bookRepository.findById(bookDto.id())
-                .orElseThrow(() -> new EntityNotFoundException("Book with id %d not found".formatted(bookDto.id())));
-        if (!bookDto.authorName().isEmpty()) {
-            Author author = authorRepository.findByFullName(bookDto.authorName())
-                    .orElseThrow(() -> new EntityNotFoundException("Author with name %s not found".formatted(bookDto.authorName())));
-            book.setAuthor(author);
-        }
-        if (!bookDto.genreName().isEmpty()) {
-            Genre genre = genreRepository.findByName(bookDto.genreName())
-                    .orElseThrow(() -> new EntityNotFoundException("Genre with name %s not found".formatted(bookDto.genreName())));
-            book.setGenre(genre);
-        }
-        if (!bookDto.title().isEmpty()) {
-            book.setTitle(bookDto.title());
-        }
+        Book book = composeBook(bookMapper.toModel(bookDto), bookDto.authorId(), bookDto.genreId());
         bookRepository.save(book);
     }
 
@@ -71,5 +57,15 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteById(long id) {
         bookRepository.deleteById(id);
+    }
+
+    private Book composeBook(Book book, Long authorId, Long genreId){
+        Author author = authorRepository.findById(authorId)
+                .orElseThrow(()->new NotFoundException("Author not found"));
+        Genre genre = genreRepository.findById(genreId)
+                .orElseThrow(()->new NotFoundException("Genre not found"));
+        book.setAuthor(author);
+        book.setGenre(genre);
+        return book;
     }
 }

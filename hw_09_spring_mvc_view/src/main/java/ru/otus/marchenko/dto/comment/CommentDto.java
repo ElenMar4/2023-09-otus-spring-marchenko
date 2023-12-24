@@ -1,13 +1,10 @@
 package ru.otus.marchenko.dto.comment;
 
-import ru.otus.marchenko.models.Comment;
+import ru.otus.marchenko.dto.book.BookDto;
 
 public record CommentDto(
         Long id,
         String message,
-        Long bookId
+        BookDto bookDto
 ) {
-    public CommentDto(Comment comment){
-        this(comment.getId(), comment.getMessage(), comment.getBook().getId());
-    }
 }

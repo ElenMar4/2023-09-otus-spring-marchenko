@@ -40,6 +40,6 @@ class AuthorControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:../book/add"));
 
-        verify(authorService).insert(eq(new AuthorCreateDto("Gogol")));
+        verify(authorService).create(eq(new AuthorCreateDto("Gogol")));
     }
 }

@@ -28,7 +28,7 @@ public class AuthorController {
         if (bindingResult.hasErrors()) {
             return "/author/add";
         }
-        service.insert(authorCreateDto);
+        service.create(authorCreateDto);
         return "redirect:../book/add";
     }
 }

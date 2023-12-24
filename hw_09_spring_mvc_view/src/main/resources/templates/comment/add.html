@@ -33,6 +33,7 @@
     <div class="row">
         <label for="comment-message">Message:</label>
         <input id="comment-message" type="text" name="message" th:value="${message}"/>
+        <div class="errors" th:if="${#fields.hasErrors('commentCreateDto.message')}" th:errors="${commentCreateDto.message}">Wrong message error</div>
     </div>
 
     <div class="row">

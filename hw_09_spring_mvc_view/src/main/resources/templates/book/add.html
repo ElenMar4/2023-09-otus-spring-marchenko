@@ -42,26 +42,26 @@
 
     <div class="row">
         <label for="book-author-name">Author:</label>
-        <select class="form-control" id="book-author-name" name="authorName">-->
+        <select class="form-control" id="book-author-name" name="authorId">-->
                     <option value="">Select author</option>
-                    <option th:each="authorName : ${authors}"
-                            th:value="${authorName}"
-                            th:text="${authorName}">
+                    <option th:each="author : ${authors}"
+                            th:value="${author.id}"
+                            th:text="${author.id}">
                     </option>
         </select>
-        <div class="errors" th:if="${#fields.hasErrors('bookCreateDto.authorName')}" th:errors="${bookCreateDto.authorName}">Wrong author name error</div>
+        <div class="errors" th:if="${#fields.hasErrors('bookCreateDto.authorId')}" th:errors="${bookCreateDto.authorId}">Wrong author name error</div>
     </div>
     <div class="row">
         <label for="book-genre-name">Genre:</label>
-        <select class="form-control" id="book-genre-name" name="genreName">-->
+        <select class="form-control" id="book-genre-name" name="genreId">-->
             <option value="">Select genre</option>
-            <option th:each="genreName : ${genres}"
-                    th:value="${genreName}"
-                    th:text="${genreName}">
+            <option th:each="genre : ${genres}"
+                    th:value="${genre.id}"
+                    th:text="${genre.id}">
             </option>
         </select>
 
-        <div class="errors" th:if="${#fields.hasErrors('bookCreateDto.genreName')}" th:errors="${bookCreateDto.genreName}">Wrong genre name error</div>
+        <div class="errors" th:if="${#fields.hasErrors('bookCreateDto.genreId')}" th:errors="${bookCreateDto.genreId}">Wrong genre name error</div>
     </div>
     <div class="row">
         <button type="submit">SAVE</button>

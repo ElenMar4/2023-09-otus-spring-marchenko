@@ -1,7 +1,10 @@
 package ru.otus.marchenko.dto.comment;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public record CommentCreateDto(
-        String message,
-        Long bookId
+        @NotBlank(message = "Message field should not be blank") String message,
+        @NotNull(message = "Book field should not be null")Long bookId
 ) {
 }

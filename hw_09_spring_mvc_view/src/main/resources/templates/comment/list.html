@@ -59,7 +59,7 @@
         <td th:text="${comment.id}"></td>
         <td th:text="${comment.message}"></td>
         <td>
-            <a href="list.html" th:href="@{/comment/delete/{id}(id=${comment.id}, bookId=${comment.bookId})}">Delete</a>
+            <a href="list.html" th:href="@{/comment/delete/{id}(id=${comment.id}, bookId=${comment.bookDto.id})}">Delete</a>
         </td>
     </tr>
     </tbody>

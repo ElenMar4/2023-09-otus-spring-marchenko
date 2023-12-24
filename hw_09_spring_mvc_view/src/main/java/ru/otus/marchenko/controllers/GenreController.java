@@ -28,7 +28,7 @@ public class GenreController {
         if (bindingResult.hasErrors()) {
             return "/genre/add";
         }
-        service.insert(genreCreateDto);
+        service.create(genreCreateDto);
         return "redirect:../book/add";
     }
 }

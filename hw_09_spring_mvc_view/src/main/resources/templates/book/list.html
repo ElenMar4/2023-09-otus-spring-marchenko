@@ -61,8 +61,8 @@
     <tr th:each="book : ${bookList}">
         <td th:text="${book.id}"></td>
         <td th:text="${book.title}"></td>
-        <td th:text="${book.author.fullName}"></td>
-        <td th:text="${book.genre.name}"></td>
+        <td th:text="${book.authorDto.fullName}"></td>
+        <td th:text="${book.genreDto.name}"></td>
         <td>
             <a href="details.html" th:href="@{/book/details/{id}(id=${book.id})}">Details</a>
         </td>

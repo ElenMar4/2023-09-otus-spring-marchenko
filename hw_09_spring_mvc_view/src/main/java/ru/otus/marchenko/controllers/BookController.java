@@ -5,13 +5,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import ru.otus.marchenko.dto.author.AuthorDto;
 import ru.otus.marchenko.dto.book.BookDto;
 import ru.otus.marchenko.dto.book.BookUpdateDto;
 import ru.otus.marchenko.dto.book.BookCreateDto;
-import ru.otus.marchenko.models.Author;
-import ru.otus.marchenko.models.Genre;
+import ru.otus.marchenko.dto.genre.GenreDto;
+import ru.otus.marchenko.mappers.BookMapper;
 import ru.otus.marchenko.services.AuthorService;
 import ru.otus.marchenko.services.BookService;
 import ru.otus.marchenko.services.GenreService;
@@ -26,6 +28,7 @@ public class BookController {
     private final BookService bookService;
     private final AuthorService authorService;
     private final GenreService genreService;
+    private final BookMapper bookMapper;
 
     @GetMapping("/book")
     public String listPage(Model model) {
@@ -36,38 +39,42 @@ public class BookController {
 
     @GetMapping("/book/add")
     public String addNewBook(BookCreateDto bookCreateDto, Model model) {
-        List<String> authorsNameList = authorService.findAll().stream().map(Author::getFullName).toList();
-        List<String> genresNameList = genreService.findAll().stream().map(Genre::getName).toList();
-        model.addAttribute("authors", authorsNameList);
-        model.addAttribute("genres", genresNameList);
+        List<AuthorDto> authors = authorService.findAll();
+        List<GenreDto> genres = genreService.findAll();
+        model.addAttribute("authors", authors);
+        model.addAttribute("genres", genres);
         model.addAttribute("bookCreateDto", bookCreateDto);
         return "book/add";
     }
 
     @PostMapping("/book/add")
-    public String saveNewBook(@Valid BookCreateDto bookCreateDto,
+    public String saveNewBook(@Valid @ModelAttribute("bookCreateDto") BookCreateDto bookCreateDto,
                               BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "/book/add";
         }
-        bookService.insert(bookCreateDto);
+        bookService.create(bookCreateDto);
         return "redirect:/book";
     }
 
     @GetMapping("/book/edit/{id}")
     public String updateBook(@PathVariable("id") Long id, Model model) {
-        BookDto bookDto = bookService.findById(id);
-        List<String> authorsNameList = authorService.findAll().stream().map(Author::getFullName).toList();
-        List<String> genresNameList = genreService.findAll().stream().map(Genre::getName).toList();
-        model.addAttribute("authors", authorsNameList);
-        model.addAttribute("genres", genresNameList);
-        model.addAttribute("book", bookDto);
+        BookUpdateDto bookUpdateDto = bookMapper.toDto(bookService.findById(id));
+        List<AuthorDto> authors = authorService.findAll();
+        List<GenreDto> genres = genreService.findAll();
+        model.addAttribute("authors", authors);
+        model.addAttribute("genres", genres);
+        model.addAttribute("bookUpdateDto", bookUpdateDto);
         return "book/edit";
     }
 
     @PostMapping("/book/edit")
-    public String updateBook(BookUpdateDto book) {
-        bookService.update(book);
+    public String updateBook(@Valid @ModelAttribute("bookUpdateDto") BookUpdateDto bookUpdateDto,
+                             BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "/book/edit";
+        }
+        bookService.update(bookUpdateDto);
         return "redirect:/book";
     }
 

@@ -1,9 +1,10 @@
 package ru.otus.marchenko.dto.book;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record BookCreateDto(
         @NotBlank(message = "Title field should not be blank") String title,
-        @NotBlank(message = "Author field should not be blank") String authorName,
-        @NotBlank(message = "Genre field should not be blank") String genreName) {
+        @NotNull(message = "Author field should not be null") Long authorId,
+        @NotNull(message = "Genre field should not be null") Long genreId) {
 }

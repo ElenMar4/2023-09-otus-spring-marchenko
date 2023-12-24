@@ -1,15 +1,10 @@
 package ru.otus.marchenko.dto.book;
-import ru.otus.marchenko.models.Author;
-import ru.otus.marchenko.models.Book;
-import ru.otus.marchenko.models.Genre;
+import ru.otus.marchenko.dto.author.AuthorDto;
+import ru.otus.marchenko.dto.genre.GenreDto;
 
 public record BookDto(
         Long id,
         String title,
-        Author author,
-        Genre genre) {
-
-    public BookDto(Book book) {
-        this(book.getId(), book.getTitle(), book.getAuthor(), book.getGenre());
-    }
+        AuthorDto authorDto,
+        GenreDto genreDto) {
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.otus.marchenko.dto.book.BookDto;
 import ru.otus.marchenko.dto.comment.CommentCreateDto;
 import ru.otus.marchenko.dto.comment.CommentDto;
 import ru.otus.marchenko.services.CommentService;
@@ -30,9 +31,10 @@ class CommentControllerTest {
     @Test
     @DisplayName("Should return correct all comments by book")
     void shouldReturnCorrectAllCommentByBookIdInPath() throws Exception {
+        BookDto bookDto = new BookDto(1L, null,null,null);
         List<CommentDto> commentDtoList = List.of(
-                new CommentDto(1L, "first", 1L),
-                new CommentDto(2L, "second", 1L)
+                new CommentDto(1L, "first", bookDto),
+                new CommentDto(2L, "second", bookDto)
         );
         given(commentService.findAllByBookId(1L)).willReturn(commentDtoList);
 
@@ -59,7 +61,7 @@ class CommentControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/comment/{bookId}"));
 
-        verify(commentService).insert(eq(new CommentCreateDto("message", 1L)));
+        verify(commentService).create(eq(new CommentCreateDto("message", 1L)));
     }
 
     @Test

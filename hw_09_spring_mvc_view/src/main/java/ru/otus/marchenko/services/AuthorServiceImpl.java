@@ -4,26 +4,35 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.marchenko.dto.author.AuthorCreateDto;
+import ru.otus.marchenko.dto.author.AuthorDto;
+import ru.otus.marchenko.exceptions.NotFoundException;
+import ru.otus.marchenko.mappers.AuthorMapper;
 import ru.otus.marchenko.models.Author;
 import ru.otus.marchenko.repositories.AuthorRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
+    private final AuthorMapper authorMapper;
 
     @Transactional(readOnly = true)
     @Override
-    public List<Author> findAll() { return authorRepository.findAll();}
+    public List<AuthorDto> findAll() {
+        List<Author> authors = authorRepository.findAll();
+        return authors.stream().map(authorMapper::toDto).toList();
+    }
 
     @Transactional(readOnly = true)
     @Override
-    public Optional<Author> findBiId(long id) { return authorRepository.findById(id);}
+    public AuthorDto findBiId(long id) {
+        Author author = authorRepository.findById(id).orElseThrow(()->new NotFoundException("Author not found"));
+        return authorMapper.toDto(author);
+    }
 
     @Transactional
     @Override
-    public void insert(AuthorCreateDto authorDto) { authorRepository.save(new Author(null, authorDto.fullName()));}
+    public void create(AuthorCreateDto authorDto) { authorRepository.save(authorMapper.toModel(authorDto));}
 }

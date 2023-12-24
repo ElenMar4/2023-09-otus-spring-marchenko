@@ -41,24 +41,24 @@
 
     <div class="row">
         <label for="book-author-id">ID:</label>
-        <input id="book-author-id" type="text" readonly="readonly" th:value="*{author.id}"/>
+        <input id="book-author-id" type="text" readonly="readonly" th:value="*{authorDto.id}"/>
     </div>
 
     <div class="row">
         <label for="book-author-name">Full name:</label>
-        <input id="book-author-name" type="text" readonly="readonly" th:value="*{author.fullName}"/>
+        <input id="book-author-name" type="text" readonly="readonly" th:value="*{authorDto.fullName}"/>
     </div>
 
     <h5>Genre:</h5>
 
     <div class="row">
         <label for="book-genre-id">ID:</label>
-        <input id="book-genre-id" type="text" readonly="readonly" th:value="*{genre.id}"/>
+        <input id="book-genre-id" type="text" readonly="readonly" th:value="*{genreDto.id}"/>
     </div>
 
     <div class="row">
         <label for="book-genre-name">Name:</label>
-        <input id="book-genre-name" type="text" readonly="readonly" th:value="*{genre.name}"/>
+        <input id="book-genre-name" type="text" readonly="readonly" th:value="*{genreDto.name}"/>
     </div>
 
     <div class="row">
@@ -67,5 +67,6 @@
         <a href="list.html" th:href="@{/book/delete/{id}(id=${book.id})}"><button type="button">DELETE</button></a>
         <a href="list.html" th:href="@{/comment/{id}(id=${book.id})}"><button type="button">COMMENTS</button></a>
     </div>
+</form>
 </body>
 </html>
