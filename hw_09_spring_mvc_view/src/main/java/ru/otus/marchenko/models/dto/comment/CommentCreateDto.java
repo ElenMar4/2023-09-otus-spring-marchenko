@@ -1,4 +1,4 @@
-package ru.otus.marchenko.dto.comment;
+package ru.otus.marchenko.models.dto.comment;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

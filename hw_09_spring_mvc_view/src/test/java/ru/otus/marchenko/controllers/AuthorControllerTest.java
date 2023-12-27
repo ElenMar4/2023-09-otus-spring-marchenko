@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.otus.marchenko.dto.author.AuthorCreateDto;
+import ru.otus.marchenko.models.dto.author.AuthorCreateDto;
 import ru.otus.marchenko.services.AuthorService;
 
 import static org.mockito.ArgumentMatchers.eq;

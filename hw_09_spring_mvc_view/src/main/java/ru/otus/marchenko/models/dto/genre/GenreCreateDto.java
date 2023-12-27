@@ -1,4 +1,4 @@
-package ru.otus.marchenko.dto.genre;
+package ru.otus.marchenko.models.dto.genre;
 
 import jakarta.validation.constraints.NotBlank;
 

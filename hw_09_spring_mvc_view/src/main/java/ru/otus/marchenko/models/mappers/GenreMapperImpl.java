@@ -1,8 +1,8 @@
-package ru.otus.marchenko.mappers;
+package ru.otus.marchenko.models.mappers;
 
 import org.springframework.stereotype.Component;
-import ru.otus.marchenko.dto.genre.GenreCreateDto;
-import ru.otus.marchenko.dto.genre.GenreDto;
+import ru.otus.marchenko.models.dto.genre.GenreCreateDto;
+import ru.otus.marchenko.models.dto.genre.GenreDto;
 import ru.otus.marchenko.models.Genre;
 
 @Component

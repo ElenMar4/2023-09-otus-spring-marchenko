@@ -3,10 +3,10 @@ package ru.otus.marchenko.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.marchenko.dto.author.AuthorCreateDto;
-import ru.otus.marchenko.dto.author.AuthorDto;
+import ru.otus.marchenko.models.dto.author.AuthorCreateDto;
+import ru.otus.marchenko.models.dto.author.AuthorDto;
 import ru.otus.marchenko.exceptions.NotFoundException;
-import ru.otus.marchenko.mappers.AuthorMapper;
+import ru.otus.marchenko.models.mappers.AuthorMapper;
 import ru.otus.marchenko.models.Author;
 import ru.otus.marchenko.repositories.AuthorRepository;
 
@@ -34,5 +34,8 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Transactional
     @Override
-    public void create(AuthorCreateDto authorDto) { authorRepository.save(authorMapper.toModel(authorDto));}
+    public AuthorDto create(AuthorCreateDto authorDto) {
+        Author author = authorRepository.save(authorMapper.toModel(authorDto));
+        return authorMapper.toDto(author);
+    }
 }

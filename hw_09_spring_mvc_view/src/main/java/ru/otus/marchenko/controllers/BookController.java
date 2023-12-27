@@ -8,12 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import ru.otus.marchenko.dto.author.AuthorDto;
-import ru.otus.marchenko.dto.book.BookDto;
-import ru.otus.marchenko.dto.book.BookUpdateDto;
-import ru.otus.marchenko.dto.book.BookCreateDto;
-import ru.otus.marchenko.dto.genre.GenreDto;
-import ru.otus.marchenko.mappers.BookMapper;
+import ru.otus.marchenko.models.dto.author.AuthorDto;
+import ru.otus.marchenko.models.dto.book.BookDto;
+import ru.otus.marchenko.models.dto.book.BookUpdateDto;
+import ru.otus.marchenko.models.dto.book.BookCreateDto;
+import ru.otus.marchenko.models.dto.genre.GenreDto;
 import ru.otus.marchenko.services.AuthorService;
 import ru.otus.marchenko.services.BookService;
 import ru.otus.marchenko.services.GenreService;
@@ -28,7 +27,6 @@ public class BookController {
     private final BookService bookService;
     private final AuthorService authorService;
     private final GenreService genreService;
-    private final BookMapper bookMapper;
 
     @GetMapping("/book")
     public String listPage(Model model) {
@@ -49,7 +47,7 @@ public class BookController {
 
     @PostMapping("/book/add")
     public String saveNewBook(@Valid @ModelAttribute("bookCreateDto") BookCreateDto bookCreateDto,
-                              BindingResult bindingResult, Model model) {
+                              BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "/book/add";
         }
@@ -59,18 +57,22 @@ public class BookController {
 
     @GetMapping("/book/edit/{id}")
     public String updateBook(@PathVariable("id") Long id, Model model) {
-        BookUpdateDto bookUpdateDto = bookMapper.toDto(bookService.findById(id));
+        BookDto bookDto = bookService.findById(id);
         List<AuthorDto> authors = authorService.findAll();
         List<GenreDto> genres = genreService.findAll();
         model.addAttribute("authors", authors);
         model.addAttribute("genres", genres);
-        model.addAttribute("bookUpdateDto", bookUpdateDto);
+        model.addAttribute("bookUpdateDto", new BookUpdateDto(
+                bookDto.id(),
+                bookDto.title(),
+                bookDto.authorDto().id(),
+                bookDto.genreDto().id()));
         return "book/edit";
     }
 
     @PostMapping("/book/edit")
     public String updateBook(@Valid @ModelAttribute("bookUpdateDto") BookUpdateDto bookUpdateDto,
-                             BindingResult bindingResult, Model model) {
+                             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "/book/edit";
         }

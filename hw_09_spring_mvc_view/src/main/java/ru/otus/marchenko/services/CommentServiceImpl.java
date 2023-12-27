@@ -3,10 +3,10 @@ package ru.otus.marchenko.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.marchenko.dto.comment.CommentCreateDto;
-import ru.otus.marchenko.dto.comment.CommentDto;
+import ru.otus.marchenko.models.dto.comment.CommentCreateDto;
+import ru.otus.marchenko.models.dto.comment.CommentDto;
 import ru.otus.marchenko.exceptions.NotFoundException;
-import ru.otus.marchenko.mappers.CommentMapper;
+import ru.otus.marchenko.models.mappers.CommentMapper;
 import ru.otus.marchenko.models.Book;
 import ru.otus.marchenko.models.Comment;
 import ru.otus.marchenko.repositories.BookRepository;
@@ -31,19 +31,19 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional
     @Override
-    public void create(CommentCreateDto commentDto) {
+    public CommentDto create(CommentCreateDto commentDto) {
         Book book = bookRepository.findById(commentDto.bookId())
                 .orElseThrow(() -> new NotFoundException("Book not found"));
         Comment comment = commentMapper.toModel(commentDto);
         comment.setBook(book);
-        commentRepository.save(comment);
+        return commentMapper.toDto(commentRepository.save(comment));
     }
 
     @Transactional
     @Override
-    public void update(CommentDto commentDto) {
+    public CommentDto update(CommentDto commentDto) {
         Comment comment = commentMapper.toModel(commentDto);
-        commentRepository.save(comment);
+        return commentMapper.toDto(commentRepository.save(comment));
     }
 
     @Transactional

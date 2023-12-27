@@ -6,14 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.otus.marchenko.dto.author.AuthorDto;
-import ru.otus.marchenko.dto.book.BookCreateDto;
-import ru.otus.marchenko.dto.book.BookDto;
-import ru.otus.marchenko.dto.book.BookUpdateDto;
-import ru.otus.marchenko.dto.genre.GenreDto;
-import ru.otus.marchenko.mappers.BookMapper;
-import ru.otus.marchenko.models.Author;
-import ru.otus.marchenko.models.Genre;
+import ru.otus.marchenko.models.dto.author.AuthorDto;
+import ru.otus.marchenko.models.dto.book.BookCreateDto;
+import ru.otus.marchenko.models.dto.book.BookDto;
+import ru.otus.marchenko.models.dto.book.BookUpdateDto;
+import ru.otus.marchenko.models.dto.genre.GenreDto;
+import ru.otus.marchenko.models.mappers.BookMapper;
 import ru.otus.marchenko.services.AuthorService;
 import ru.otus.marchenko.services.BookService;
 import ru.otus.marchenko.services.GenreService;
@@ -103,7 +101,6 @@ class BookControllerTest {
         given(bookService.findById(anyLong())).willReturn(EXPECT_BOOK.get(0));
         given(authorService.findAll()).willReturn(AUTHORS);
         given(genreService.findAll()).willReturn(GENRES);
-        given(bookMapper.toDto(EXPECT_BOOK.get(0))).willReturn(EXPECT_UPDATE_BOOK);
         mvc.perform(get("/book/edit/{id}", "1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("book/edit"))

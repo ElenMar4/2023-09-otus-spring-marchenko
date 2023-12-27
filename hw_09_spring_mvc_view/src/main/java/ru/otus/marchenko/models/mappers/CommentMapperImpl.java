@@ -1,10 +1,10 @@
-package ru.otus.marchenko.mappers;
+package ru.otus.marchenko.models.mappers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.otus.marchenko.dto.book.BookDto;
-import ru.otus.marchenko.dto.comment.CommentCreateDto;
-import ru.otus.marchenko.dto.comment.CommentDto;
+import ru.otus.marchenko.models.dto.book.BookDto;
+import ru.otus.marchenko.models.dto.comment.CommentCreateDto;
+import ru.otus.marchenko.models.dto.comment.CommentDto;
 import ru.otus.marchenko.models.Book;
 import ru.otus.marchenko.models.Comment;
 

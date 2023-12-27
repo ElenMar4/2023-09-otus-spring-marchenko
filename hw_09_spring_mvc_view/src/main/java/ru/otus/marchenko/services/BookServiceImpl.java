@@ -3,11 +3,11 @@ package ru.otus.marchenko.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.marchenko.dto.book.BookDto;
-import ru.otus.marchenko.dto.book.BookUpdateDto;
-import ru.otus.marchenko.dto.book.BookCreateDto;
+import ru.otus.marchenko.models.dto.book.BookDto;
+import ru.otus.marchenko.models.dto.book.BookUpdateDto;
+import ru.otus.marchenko.models.dto.book.BookCreateDto;
 import ru.otus.marchenko.exceptions.NotFoundException;
-import ru.otus.marchenko.mappers.BookMapper;
+import ru.otus.marchenko.models.mappers.BookMapper;
 import ru.otus.marchenko.models.Author;
 import ru.otus.marchenko.models.Book;
 import ru.otus.marchenko.models.Genre;
@@ -41,16 +41,26 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public void create(BookCreateDto bookDto) {
-        Book book = composeBook(bookMapper.toModel(bookDto), bookDto.authorId(), bookDto.genreId());
-        bookRepository.save(book);
+    public BookDto create(BookCreateDto bookDto) {
+        Author author = authorRepository.findById(bookDto.authorId())
+                .orElseThrow(()->new NotFoundException("Author not found"));
+        Genre genre = genreRepository.findById(bookDto.genreId())
+                .orElseThrow(()->new NotFoundException("Genre not found"));
+        Book book = bookMapper.toModel(bookDto, author, genre);
+        return bookMapper.toDto(bookRepository.save(book));
     }
 
     @Transactional
     @Override
-    public void update(BookUpdateDto bookDto) {
-        Book book = composeBook(bookMapper.toModel(bookDto), bookDto.authorId(), bookDto.genreId());
-        bookRepository.save(book);
+    public BookDto update(BookUpdateDto bookDto) {
+        Book book = bookRepository.findById(bookDto.id())
+                .orElseThrow(()->new NotFoundException("Book not found"));
+        Author author = authorRepository.findById(bookDto.authorId())
+                .orElseThrow(()->new NotFoundException("Author not found"));
+        Genre genre = genreRepository.findById(bookDto.genreId())
+                .orElseThrow(()->new NotFoundException("Genre not found"));
+        book = bookMapper.toModel(bookDto, book, author, genre);
+        return bookMapper.toDto(bookRepository.save(book));
     }
 
     @Transactional

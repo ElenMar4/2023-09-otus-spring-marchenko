@@ -3,10 +3,10 @@ package ru.otus.marchenko.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.marchenko.dto.genre.GenreCreateDto;
-import ru.otus.marchenko.dto.genre.GenreDto;
+import ru.otus.marchenko.models.dto.genre.GenreCreateDto;
+import ru.otus.marchenko.models.dto.genre.GenreDto;
 import ru.otus.marchenko.exceptions.NotFoundException;
-import ru.otus.marchenko.mappers.GenreMapper;
+import ru.otus.marchenko.models.mappers.GenreMapper;
 import ru.otus.marchenko.models.Genre;
 import ru.otus.marchenko.repositories.GenreRepository;
 
@@ -35,6 +35,8 @@ public class GenreServiceImpl implements GenreService {
 
     @Transactional
     @Override
-    public void create(GenreCreateDto genreDto) {
-        genreRepository.save(genreMapper.toModel(genreDto)); }
+    public GenreDto create(GenreCreateDto genreDto) {
+        Genre genre = genreRepository.save(genreMapper.toModel(genreDto));
+    return genreMapper.toDto(genre);
+    }
 }

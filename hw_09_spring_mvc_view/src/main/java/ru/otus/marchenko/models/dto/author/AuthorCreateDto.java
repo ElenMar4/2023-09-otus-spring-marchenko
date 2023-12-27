@@ -1,4 +1,4 @@
-package ru.otus.marchenko.dto.author;
+package ru.otus.marchenko.models.dto.author;
 
 import jakarta.validation.constraints.NotBlank;
 

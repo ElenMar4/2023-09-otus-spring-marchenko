@@ -7,8 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.otus.marchenko.dto.comment.CommentCreateDto;
-import ru.otus.marchenko.dto.comment.CommentDto;
+import ru.otus.marchenko.models.dto.comment.CommentCreateDto;
+import ru.otus.marchenko.models.dto.comment.CommentDto;
 import ru.otus.marchenko.services.CommentService;
 
 import java.util.List;

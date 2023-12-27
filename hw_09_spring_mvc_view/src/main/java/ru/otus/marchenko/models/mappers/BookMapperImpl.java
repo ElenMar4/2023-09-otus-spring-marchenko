@@ -1,12 +1,12 @@
-package ru.otus.marchenko.mappers;
+package ru.otus.marchenko.models.mappers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.otus.marchenko.dto.author.AuthorDto;
-import ru.otus.marchenko.dto.book.BookCreateDto;
-import ru.otus.marchenko.dto.book.BookDto;
-import ru.otus.marchenko.dto.book.BookUpdateDto;
-import ru.otus.marchenko.dto.genre.GenreDto;
+import ru.otus.marchenko.models.dto.author.AuthorDto;
+import ru.otus.marchenko.models.dto.book.BookCreateDto;
+import ru.otus.marchenko.models.dto.book.BookDto;
+import ru.otus.marchenko.models.dto.book.BookUpdateDto;
+import ru.otus.marchenko.models.dto.genre.GenreDto;
 import ru.otus.marchenko.models.Author;
 import ru.otus.marchenko.models.Book;
 import ru.otus.marchenko.models.Genre;
@@ -26,11 +26,6 @@ public class BookMapperImpl implements BookMapper{
     }
 
     @Override
-    public BookUpdateDto toDto(BookDto book) {
-        return new BookUpdateDto(book.id(), book.title(), book.authorDto().id(), book.genreDto().id());
-    }
-
-    @Override
     public Book toModel(BookDto bookDto) {
         Author author = authorMapper.toModel(bookDto.authorDto());
         Genre genre = genreMapper.toModel(bookDto.genreDto());
@@ -38,12 +33,15 @@ public class BookMapperImpl implements BookMapper{
     }
 
     @Override
-    public Book toModel(BookCreateDto bookDto) {
-        return new Book(null, bookDto.title(), null, null);
+    public Book toModel(BookCreateDto bookDto, Author author, Genre genre) {
+        return new Book(null, bookDto.title(), author, genre);
     }
 
     @Override
-    public Book toModel(BookUpdateDto bookDto) {
-        return new Book(bookDto.id(), bookDto.title(), null, null);
+    public Book toModel(BookUpdateDto bookDto, Book book, Author author, Genre genre) {
+        book.setTitle(bookDto.title());
+        book.setAuthor(author);
+        book.setGenre(genre);
+        return book;
     }
 }

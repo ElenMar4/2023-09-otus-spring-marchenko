@@ -1,7 +1,7 @@
-package ru.otus.marchenko.mappers;
+package ru.otus.marchenko.models.mappers;
 
-import ru.otus.marchenko.dto.comment.CommentCreateDto;
-import ru.otus.marchenko.dto.comment.CommentDto;
+import ru.otus.marchenko.models.dto.comment.CommentCreateDto;
+import ru.otus.marchenko.models.dto.comment.CommentDto;
 import ru.otus.marchenko.models.Comment;
 
 public interface CommentMapper {

@@ -1,7 +1,7 @@
-package ru.otus.marchenko.mappers;
+package ru.otus.marchenko.models.mappers;
 
-import ru.otus.marchenko.dto.genre.GenreCreateDto;
-import ru.otus.marchenko.dto.genre.GenreDto;
+import ru.otus.marchenko.models.dto.genre.GenreCreateDto;
+import ru.otus.marchenko.models.dto.genre.GenreDto;
 import ru.otus.marchenko.models.Genre;
 
 public interface GenreMapper {
