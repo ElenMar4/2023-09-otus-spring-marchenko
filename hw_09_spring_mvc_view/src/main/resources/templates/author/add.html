@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Autor add</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+        input {
+        display: inline-block;
+            width: 200px;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<form id="add-form" action="add.html" th:method="post" th:action="@{/author/add}">
+<h4>Add name new author:</h4>
+    <div class="row">
+        <label for="author-fullName">FullName:</label>
+        <input id="author-fullName" type="text" name="fullName" value=""/>
+        <div class="errors" th:if="${#fields.hasErrors('authorCreateDto.fullName')}" th:errors="${authorCreateDto.fullName}">Wrong author name error</div>
+    </div>
+
+    <div class="row">
+        <button type="submit">SAVE</button>
+        <a href="add.html" th:href="@{/book/add}"><button type="button">CANCEL</button></a>
+    </div>
+</form>
+</body>
+</html>
