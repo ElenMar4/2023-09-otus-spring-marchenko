@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create genre:</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+        input {
+        display: inline-block;
+            width: 200px;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<form id="add-form">
+    <h4>Add name new genre:</h4>
+    <div class="row">
+        <label for="genre-name">Name:</label>
+        <input id="genre-name" type="text" name="name" value=""/>
+    </div>
+
+    <div class="row">
+        <button type="button" onclick="saveGenre()" class="btn btn-success btn-lg">SAVE</button>
+        <a href="add.html" th:href="@{/book/add}"><button type="button">CANCEL</button></a>
+    </div>
+</form>
+<script>
+    function saveGenre(){
+        const name = document.getElementById("genre-name").value;
+        const genreCreateDto = {name: name}
+
+        fetch('/api/v1/genre', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(genreCreateDto)
+            }).then(response => window.location.replace('/book/add'))
+
+    }
+</script>
+</body>
+</html>

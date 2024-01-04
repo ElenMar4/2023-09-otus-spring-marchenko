@@ -21,5 +21,6 @@
         <module>hw_07_spring_data_jpa</module>
         <module>hw_08_mongoDB</module>
         <module>hw_09_spring_mvc_view</module>
+        <module>hw_10_spring_mvc_rest_ajax</module>
     </modules>
 </project>
