@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit book</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body onload="getBook()">
+<h4>Update book:</h4>
+<form id="edit-form">
+    <div class="row">
+        <label for="book-id">Id:</label>
+        <input id="book-id" type="text" readonly="readonly" name="id"/>
+    </div>
+
+    <div class="row">
+        <label for="book-title">Title:</label>
+        <input id="book-title" type="text" name="title"/>
+    </div>
+
+    <div class="row">
+        <label for="book-author-id">Author:</label>
+        <select class="form-control" id="book-author-id" name="authorId"></select>
+    </div>
+
+    <div class="row">
+        <label for="book-genre-id">Genre:</label>
+        <select class="form-control" id="book-genre-id" name="genreId"></select>
+    </div>
+
+    <div class="row">
+        <button type="button" onclick="updateBook()" class="btn btn-success btn-lg">SAVE</button>
+        <a href="list.html" th:href="@{/book}">
+            <button type="button">CANCEL</button>
+        </a>
+    </div>
+</form>
+<script>
+    function getBook(){
+     var bookId = [[${id}]];
+        fetch('/api/v1/book/' + bookId)
+            .then(response => response.json())
+            .then(book => {
+                document.getElementById('book-id').value = book.id;
+                document.getElementById('book-title').value = book.title;
+
+                fetch("/api/v1/author")
+                    .then(response => response.json())
+                    .then(authors => {
+                        authors.forEach(author =>{
+                        const authorInput = document.getElementById('book-author-id')
+                        if (book.authorDto.id === author.id) {
+                            authorInput.add(new Option(author.fullName, author.id, false, true));
+                        } else {
+                        authorInput.add(new Option(author.fullName, author.id));
+                        }
+                    });
+                });
+
+                fetch("/api/v1/genre")
+                    .then(response => response.json())
+                    .then(genres => {
+                        genres.forEach(genre =>{
+                        const genreInput = document.getElementById('book-genre-id')
+                        if (book.genreDto.id === genre.id) {
+                            genreInput.add(new Option(genre.name, genre.id, false, true));
+                        } else {
+                            genreInput.add(new Option(genre.name, genre.id));
+                        }
+                    });
+                });
+        });
+    }
+
+    function updateBook(){
+        const id = document.getElementById("book-id").value;
+        const title = document.getElementById("book-title").value;
+        const authorId = document.getElementById("book-author-id").value;
+        const genreId = document.getElementById("book-genre-id").value;
+        const bookUpdateDto = { id: id, title: title, authorId: authorId, genreId: genreId }
+
+        fetch("/api/v1/book", {
+            method: "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(bookUpdateDto)})
+            .then(response => response.json())
+            .then(function () {
+                location.href = "/book/details/" + id;
+            });
+
+    }
+</script>
+
+</body>
+</html>
