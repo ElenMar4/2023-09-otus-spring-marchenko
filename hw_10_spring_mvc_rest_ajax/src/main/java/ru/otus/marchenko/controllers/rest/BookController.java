@@ -33,7 +33,7 @@ public class BookController {
         bookService.deleteById(id);
     }
 
-    @PutMapping("/api/v1/book")
+    @PutMapping("/api/v1/book/{id}")
     public BookDto updateBook(@RequestBody @Valid BookUpdateDto bookUpdateDto) {
         return bookService.update(bookUpdateDto);
     }

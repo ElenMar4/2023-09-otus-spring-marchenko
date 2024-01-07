@@ -81,7 +81,7 @@ class BookControllerTest {
     @DisplayName("Should correct update book")
     void shouldUpdateBook() throws Exception {
         given(bookService.update(any(BookUpdateDto.class))).willReturn(BOOK_EXPECT.get(0));
-        mvc.perform(put("/api/v1/book")
+        mvc.perform(put("/api/v1/book/{id}", ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(BOOK_UPDATE_EXPECT)))
                 .andExpect(status().isOk());
