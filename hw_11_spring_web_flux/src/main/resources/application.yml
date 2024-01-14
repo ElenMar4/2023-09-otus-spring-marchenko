@@ -1,0 +1,13 @@
+spring:
+#  profiles:
+##    active: dev
+  data:
+    mongodb:
+      database: mainDB
+      port: 27017
+      host: localhost
+
+mongock:
+  runner-type: "InitializingBean"
+  change-logs-scan-package:
+    - ru.otus.marchenko.changelogs
