@@ -4,10 +4,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import reactor.core.publisher.Flux;
@@ -27,7 +28,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@WebFluxTest
+@ContextConfiguration(classes = {CommentController.class})
 class CommentControllerTest {
 
     @Autowired
@@ -36,7 +38,7 @@ class CommentControllerTest {
     private BookReactiveRepository bookReactiveRepository;
     @MockBean
     private CommentReactiveRepository commentReactiveRepository;
-    @Autowired
+    @MockBean
     private CommentMapper commentMapper;
 
     private static final Author AUTHOR_EXPECT = new Author("1A", "J. W. Goethe");
@@ -53,7 +55,9 @@ class CommentControllerTest {
         Mockito
                 .when(commentReactiveRepository.findAllByBookId(BOOK_EXPECT.getId()))
                 .thenReturn(commentsFlux);
-
+        Mockito
+                .when(commentMapper.toDto(any()))
+                .thenReturn(COMMENTS_DTO_EXPECTED.get(0));
         webClient.get().uri("/api/v1/comment/{id}", BOOK_EXPECT.getId())
                 .header(HttpHeaders.ACCEPT, "application/json")
                 .exchange()
@@ -71,7 +75,9 @@ class CommentControllerTest {
 
         Mockito.when(bookReactiveRepository.findById(any(String.class))).thenReturn(bookMono);
         Mockito.when(commentReactiveRepository.save(any())).thenReturn(commentMono);
-
+        Mockito
+                .when(commentMapper.toDto(any()))
+                .thenReturn(COMMENTS_DTO_EXPECTED.get(0));
         var result = webClient.post()
                 .uri("/api/v1/comment")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -90,7 +96,9 @@ class CommentControllerTest {
         Mockito
                 .when(commentReactiveRepository.deleteById(any(String.class)))
                 .thenReturn(voidReturn);
-
+        Mockito
+                .when(commentMapper.toDto(any()))
+                .thenReturn(COMMENTS_DTO_EXPECTED.get(0));
         webClient.delete().uri("/api/v1/comment/{id}", BOOK_EXPECT.getId())
                 .exchange()
                 .expectStatus().isNoContent();

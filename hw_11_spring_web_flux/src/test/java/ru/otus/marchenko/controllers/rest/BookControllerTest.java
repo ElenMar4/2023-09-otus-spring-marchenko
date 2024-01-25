@@ -6,10 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import reactor.core.publisher.Flux;
@@ -33,7 +34,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
 @TestMethodOrder(MethodOrderer.MethodName.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@WebFluxTest
+@ContextConfiguration(classes = {BookController.class})
 class BookControllerTest {
     @Autowired
     private WebTestClient webClient;
@@ -43,7 +45,7 @@ class BookControllerTest {
     private AuthorReactiveRepository authorReactiveRepository;
     @MockBean
     private GenreReactiveRepository genreReactiveRepository;
-    @Autowired
+    @MockBean
     private BookMapper bookMapper;
 
     private static final List<AuthorDto> AUTHOR_DTO_EXPECT = List.of(
@@ -80,6 +82,9 @@ class BookControllerTest {
         Mockito
                 .when(bookReactiveRepository.findAll())
                 .thenReturn(booksFlux);
+        Mockito
+                .when(bookMapper.toDto(any()))
+                .thenReturn(BOOK_DTO_EXPECT.get(0), BOOK_DTO_EXPECT.get(1));
 
         List<BookDto> result = webClient.get().uri("/api/v1/book")
                 .header(HttpHeaders.ACCEPT, "application/json")
@@ -101,7 +106,9 @@ class BookControllerTest {
         Mockito
                 .when(bookReactiveRepository.findById(BOOK_EXPECT.get(0).getId()))
                 .thenReturn(bookMonoFindById);
-
+        Mockito
+                .when(bookMapper.toDto(any()))
+                .thenReturn(BOOK_DTO_EXPECT.get(0));
         BookDto result = webClient.get().uri("/api/v1/book/{id}", ID)
                 .header(HttpHeaders.ACCEPT, "application/json")
                 .exchange()
@@ -139,7 +146,9 @@ class BookControllerTest {
         Mockito.when(authorReactiveRepository.findById(any(String.class))).thenReturn(authorMono);
         Mockito.when(genreReactiveRepository.findById(any(String.class))).thenReturn(genreMono);
         Mockito.when(bookReactiveRepository.save(any())).thenReturn(bookUpdateMono);
-
+        Mockito
+                .when(bookMapper.toDto(any()))
+                .thenReturn(BOOK_DTO_EXPECT.get(0));
         var result = webClient.put()
                 .uri("/api/v1/book/{id}", ID)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -161,7 +170,9 @@ class BookControllerTest {
         Mockito.when(authorReactiveRepository.findById(any(String.class))).thenReturn(authorMono);
         Mockito.when(genreReactiveRepository.findById(any(String.class))).thenReturn(genreMono);
         Mockito.when(bookReactiveRepository.save(any())).thenReturn(bookMonoCreate);
-
+        Mockito
+                .when(bookMapper.toDto(any()))
+                .thenReturn(BOOK_DTO_EXPECT.get(0));
         var result = webClient.post()
                 .uri("/api/v1/book")
                 .contentType(MediaType.APPLICATION_JSON)

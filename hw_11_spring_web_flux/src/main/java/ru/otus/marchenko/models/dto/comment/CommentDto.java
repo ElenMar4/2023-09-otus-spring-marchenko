@@ -1,10 +1,15 @@
 package ru.otus.marchenko.models.dto.comment;
 
-import ru.otus.marchenko.models.dto.book.BookDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public record CommentDto(
-        String id,
-        String message,
-        String bookId
-) {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class CommentDto{
+
+    private String id;
+    private String message;
+    private String bookId;
 }

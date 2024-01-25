@@ -1,7 +1,15 @@
 package ru.otus.marchenko.models.dto.author;
 
-public record AuthorDto (
-        String id,
-        String fullName
-){
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class AuthorDto {
+
+       private String id;
+       private String fullName;
+
 }

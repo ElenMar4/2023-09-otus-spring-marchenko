@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import ru.otus.marchenko.models.Book;
+import ru.otus.marchenko.exceptions.NotFoundException;
 import ru.otus.marchenko.models.dto.comment.CommentCreateDto;
 import ru.otus.marchenko.models.dto.comment.CommentDto;
 import ru.otus.marchenko.models.mappers.CommentMapper;
@@ -28,9 +28,13 @@ public class CommentController {
 
     @PostMapping("/api/v1/comment")
     public Mono<CommentDto> createComment(@Valid @RequestBody CommentCreateDto commentCreateDto) {
-        Book book = bookRepository.findById(commentCreateDto.bookId()).block();
-        return commentRepository.save(mapper.toModel(commentCreateDto, book))
-                .map(mapper::toDto);
+        return bookRepository.findById(commentCreateDto.getBookId())
+                .switchIfEmpty(Mono.error(new NotFoundException("Not found book")))
+                .flatMap(data ->{
+                    return commentRepository.save(mapper.toModel(commentCreateDto, data))
+                            .map(mapper::toDto);
+                });
+
     }
 
     @DeleteMapping("/api/v1/comment/{id}")

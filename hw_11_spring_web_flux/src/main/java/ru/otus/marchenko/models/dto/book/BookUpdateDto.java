@@ -1,11 +1,24 @@
 package ru.otus.marchenko.models.dto.book;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public record BookUpdateDto(
-        @NotNull String id,
-        @NotBlank(message = "Title field should not be blank") String title,
-        @NotNull(message = "Author field should not be null") String authorId,
-        @NotNull(message = "Genre field should not be null") String genreId) {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class BookUpdateDto{
+
+    @NotBlank
+    private String id;
+
+    @NotBlank(message = "Title field should not be blank")
+    private String title;
+
+    @NotBlank(message = "Author field should not be null")
+    private String authorId;
+
+    @NotBlank(message = "Genre field should not be null")
+    private String genreId;
 }

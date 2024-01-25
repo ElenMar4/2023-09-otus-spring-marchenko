@@ -1,8 +1,16 @@
 package ru.otus.marchenko.models.dto.genre;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public record GenreCreateDto(
-        @NotBlank(message = "Name field should not be blank") String name
-) {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class GenreCreateDto{
+
+    @NotBlank(message = "Name field should not be blank")
+    private String name;
+
 }

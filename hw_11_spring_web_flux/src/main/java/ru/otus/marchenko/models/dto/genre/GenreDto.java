@@ -1,7 +1,14 @@
 package ru.otus.marchenko.models.dto.genre;
 
-public record GenreDto (
-        String id,
-        String name
-){
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class GenreDto{
+
+    private String id;
+    private String name;
 }

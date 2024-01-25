@@ -6,9 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import ru.otus.marchenko.models.Author;
-import ru.otus.marchenko.models.Book;
-import ru.otus.marchenko.models.Genre;
+import ru.otus.marchenko.exceptions.NotFoundException;
 import ru.otus.marchenko.models.dto.book.BookCreateDto;
 import ru.otus.marchenko.models.dto.book.BookDto;
 import ru.otus.marchenko.models.dto.book.BookUpdateDto;
@@ -35,6 +33,7 @@ public class BookController {
     @GetMapping("/api/v1/book/{id}")
     public Mono<BookDto> getBookById(@PathVariable("id") String id) {
         return bookRepository.findById(id)
+                .switchIfEmpty(Mono.error(new NotFoundException("Not found book")))
                 .map(bookMapper::toDto);
     }
 
@@ -46,18 +45,29 @@ public class BookController {
 
     @PutMapping("/api/v1/book/{id}")
     public Mono<BookDto> updateBook(@RequestBody @Valid BookUpdateDto bookUpdateDto) {
-        Book book = bookRepository.findById(bookUpdateDto.id()).block();
-        Author author = authorRepository.findById(bookUpdateDto.authorId()).block();
-        Genre genre = genreRepository.findById(bookUpdateDto.genreId()).block();
-        return bookRepository.save(bookMapper.toModel(bookUpdateDto, book, author, genre))
-                .map(bookMapper::toDto);
+        return bookRepository.findById(bookUpdateDto.getId())
+                .switchIfEmpty(Mono.error(new NotFoundException("Not found book")))
+                .zipWith(authorRepository.findById(bookUpdateDto.getAuthorId()))
+                .switchIfEmpty(Mono.error(new NotFoundException("Not found author")))
+                .zipWith(genreRepository.findById(bookUpdateDto.getGenreId()))
+                .switchIfEmpty(Mono.error(new NotFoundException("Not found genre")))
+                .flatMap(data ->{
+                    return bookRepository.save(bookMapper
+                                    .toModel(bookUpdateDto, data.getT1().getT2(), data.getT2()))
+                                    .map(bookMapper::toDto);
+                });
     }
 
     @PostMapping("/api/v1/book")
     public Mono<BookDto> createBook(@RequestBody @Valid BookCreateDto bookCreateDto) {
-        Author author = authorRepository.findById(bookCreateDto.authorId()).block();
-        Genre genre = genreRepository.findById(bookCreateDto.genreId()).block();
-        return bookRepository.save(bookMapper.toModel(bookCreateDto, author, genre))
-                .map(bookMapper::toDto);
+            return authorRepository.findById(bookCreateDto.getAuthorId())
+                    .switchIfEmpty(Mono.error(new NotFoundException("Not found author")))
+                    .zipWith(genreRepository.findById(bookCreateDto.getGenreId()))
+                    .switchIfEmpty(Mono.error(new NotFoundException("Not found genre")))
+                    .flatMap(data -> {
+                        return bookRepository.save(bookMapper
+                                        .toModel(bookCreateDto, data.getT1(), data.getT2()))
+                                .map(bookMapper::toDto);
+                    });
     }
 }
