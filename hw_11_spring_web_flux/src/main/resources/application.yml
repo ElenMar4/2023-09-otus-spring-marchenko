@@ -1,0 +1,7 @@
+spring:
+  data:
+    mongodb:
+      database: mainDB
+      port: 27017
+      host: localhost
+

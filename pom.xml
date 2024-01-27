@@ -22,5 +22,6 @@
         <module>hw_08_mongoDB</module>
         <module>hw_09_spring_mvc_view</module>
         <module>hw_10_spring_mvc_rest_ajax</module>
+        <module>hw_11_spring_web_flux</module>
     </modules>
 </project>
