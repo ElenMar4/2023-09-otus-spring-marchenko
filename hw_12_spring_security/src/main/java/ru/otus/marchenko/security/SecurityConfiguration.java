@@ -21,12 +21,11 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
-                .authorizeHttpRequests(request -> {
-                    request.anyRequest().authenticated();
-                    })
-                .formLogin(Customizer.withDefaults())
-                .build();
+                    .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                    .authorizeHttpRequests(request -> request.anyRequest().authenticated())
+                    .formLogin(Customizer.withDefaults())
+                    .httpBasic(Customizer.withDefaults())
+                    .build();
     }
 
     @Bean

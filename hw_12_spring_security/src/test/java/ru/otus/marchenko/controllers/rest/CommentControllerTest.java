@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.marchenko.models.dto.author.AuthorDto;
@@ -74,5 +75,13 @@ class CommentControllerTest {
     void shouldCorrectDeleteCommentById() throws Exception {
         mvc.perform(delete("/api/v1/comment/{id}", BOOK_EXPECT.id()))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @WithAnonymousUser
+    @DisplayName("Should fail when the user is anonymous")
+    public void shouldFailWhenUserIsNotAuthorized() throws Exception{
+        mvc.perform(get("/api/v1/comment"))
+                .andExpect(status().isUnauthorized());
     }
 }
