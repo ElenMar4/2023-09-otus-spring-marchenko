@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new comment</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+        input {
+        display: inline-block;
+            width: 200px;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body onload="loadBookId()">
+<form id="add-form">
+
+    <div class="row">
+        <label for="book-id">Book Id:</label>
+        <input id="book-id" type="text" name="bookId" readonly="readonly"/>
+    </div>
+
+    <div class="row">
+        <label for="comment-message">Message:</label>
+        <input id="comment-message" type="text" name="message"/>
+    </div>
+
+    <div class="row">
+        <button type="button" onclick="saveComment()" class="btn btn-success btn-lg">SAVE</button>
+        <a href="list.html" th:href="@{/comment/{bookId}(bookId=${bookId})}">
+            <button type="button">Cancel</button>
+        </a>
+    </div>
+</form>
+<script>
+    function loadBookId(){
+    var bookId = [[${bookId}]];
+        document.getElementById("book-id").value = bookId;
+    }
+
+    function saveComment(){
+        var bookId = [[${bookId}]];
+        const message = document.getElementById("comment-message").value;
+        const commentCreateDto = {message: message, bookId: bookId}
+
+        fetch('/api/v1/comment', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(commentCreateDto)
+            }).then(response => window.location.replace('/comment/' + bookId))
+    }
+</script>
+</body>
+</html>

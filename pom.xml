@@ -23,5 +23,6 @@
         <module>hw_09_spring_mvc_view</module>
         <module>hw_10_spring_mvc_rest_ajax</module>
         <module>hw_11_spring_web_flux</module>
+        <module>hw_12_spring_security</module>
     </modules>
 </project>

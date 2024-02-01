@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Book information with comments</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+        button {
+            margin-top: 10px;
+            margin-right: 10px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body onload="getBook()">
+
+<div class="row">
+    <a href="list.html" th:href="@{/book}">
+        <button type="button">CANCEL</button>
+    </a>
+</div>
+<form id="details-form">
+    <h4>Book Info:</h4>
+
+    <div class="row">
+        <label for="id">ID:</label>
+        <input id="id" name="id" type="text" readonly="readonly"/>
+    </div>
+
+    <div class="row">
+        <label for="book-title">Title:</label>
+        <input id="book-title" type="text" readonly="readonly"/>
+    </div>
+
+    <h5>Author:</h5>
+
+    <div class="row">
+        <label for="book-author-id">ID:</label>
+        <input id="book-author-id" type="text" readonly="readonly"/>
+    </div>
+
+    <div class="row">
+        <label for="book-author-name">Full name:</label>
+        <input id="book-author-name" type="text" readonly="readonly"/>
+    </div>
+
+    <h5>Genre:</h5>
+
+    <div class="row">
+        <label for="book-genre-id">ID:</label>
+        <input id="book-genre-id" type="text" readonly="readonly"/>
+    </div>
+
+    <div class="row">
+        <label for="book-genre-name">Name:</label>
+        <input id="book-genre-name" type="text" readonly="readonly"/>
+    </div>
+    <script>
+        function getBook(){
+         var bookId = [[${id}]];
+            fetch('/api/v1/book/' + bookId)
+                .then(response => response.json())
+                .then(book => {
+                document.getElementById('id').value = book.id;
+                document.getElementById('book-title').value = book.title;
+                document.getElementById('book-author-id').value = book.authorDto.id;
+                document.getElementById('book-author-name').value = book.authorDto.fullName;
+                document.getElementById('book-genre-id').value = book.genreDto.id;
+                document.getElementById('book-genre-name').value = book.genreDto.name;
+
+//кнопка delete
+                const buttonDelete = document.createElement("button");
+                buttonDelete.innerText = "DELETE";
+                buttonDelete.addEventListener('click', function () {
+                    deleteBook(book.id);
+                });
+                buttonDelete.className = "btn btn-danger";
+                document.body.append(buttonDelete);
+//кнопка edit
+                const buttonEdit = document.createElement("button");
+                buttonEdit.innerText = "EDIT";
+                buttonEdit.addEventListener('click', function () {
+                    location.href = "/book/edit/" + book.id;
+                });
+                buttonEdit.className = "btn btn-danger";
+                document.body.append(buttonEdit);
+
+//кнопка comments
+                const buttonComment = document.createElement("button");
+                buttonComment.innerText = "COMMENTS";
+                buttonComment.addEventListener('click', function () {
+                    location.href = "/comment/" + book.id;
+                });
+                buttonComment.className = "btn btn-danger";
+                document.body.append(buttonComment);
+                });
+        }
+
+        function deleteBook(id){
+         fetch(`/api/v1/book/${id}`, {method: "DELETE"})
+            .then(response => response)
+            .then(function () {
+                location.href = "/book";
+            });
+        }
+    </script>
+</form>
+</body>
+</html>

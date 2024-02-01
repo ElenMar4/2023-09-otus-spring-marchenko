@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Autor add</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+        input {
+        display: inline-block;
+            width: 200px;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<form id="add-form">
+<h4>Add name new author:</h4>
+    <div class="row">
+        <label for="author-fullName">FullName:</label>
+        <input id="author-fullName" type="text" name="fullName" value=""/>
+    </div>
+
+    <div class="row">
+        <button type="button" onclick="saveAuthor()" class="btn btn-success btn-lg">SAVE</button>
+        <a href="add.html" th:href="@{/book/add}"><button type="button">CANCEL</button></a>
+    </div>
+</form>
+<script>
+    function saveAuthor(){
+        const fullName = document.getElementById("author-fullName").value;
+        const authorCreateDto = {fullName: fullName}
+
+        fetch('/api/v1/author', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(authorCreateDto)
+            }).then(response => window.location.replace('/book/add'))
+
+    }
+</script>
+</body>
+</html>
