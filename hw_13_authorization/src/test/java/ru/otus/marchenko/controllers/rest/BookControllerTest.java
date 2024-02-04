@@ -31,10 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookController.class)
-@WithMockUser(
-        username = "admin",
-        authorities = {"ROLE_ADMIN"}
-)
 @Import({SecurityConfiguration.class, UserServiceImpl.class})
 @MockBean(UserRepository.class)
 class BookControllerTest {
@@ -62,9 +58,14 @@ class BookControllerTest {
     @MockBean
     private BookService bookService;
 
+    //for Admin
     @Test
-    @DisplayName("Should correct return list books")
-    void shouldReturnCorrectBookList() throws Exception {
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
+    @DisplayName("Admin should correct get list books")
+    void shouldGetCorrectBookList() throws Exception {
         given(bookService.findAll()).willReturn(BOOK_EXPECT);
         mvc.perform(get("/api/v1/book"))
                 .andExpect(status().isOk())
@@ -72,8 +73,12 @@ class BookControllerTest {
     }
 
     @Test
-    @DisplayName("Should correct return book by id")
-    void shouldReturnCorrectBookById() throws Exception {
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
+    @DisplayName("Admin should correct get book by id")
+    void shouldGetCorrectBookById() throws Exception {
         given(bookService.findById(ID)).willReturn(BOOK_EXPECT.get(0));
         mvc.perform(get("/api/v1/book/{id}", ID))
                 .andExpect(status().isOk())
@@ -81,14 +86,22 @@ class BookControllerTest {
     }
 
     @Test
-    @DisplayName("Should correct delete book by id")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
+    @DisplayName("Admin can correct delete book by id")
     void shouldCorrectDeleteBookById() throws Exception {
         mvc.perform(delete("/api/v1/book/{id}", ID))
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    @DisplayName("Should correct update book")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
+    @DisplayName("Admin can correct update book")
     void shouldUpdateBook() throws Exception {
         given(bookService.update(any(BookUpdateDto.class))).willReturn(BOOK_EXPECT.get(0));
         mvc.perform(put("/api/v1/book/{id}", ID)
@@ -98,7 +111,11 @@ class BookControllerTest {
     }
 
     @Test
-    @DisplayName("Should correct create new book")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
+    @DisplayName("Admin can correct create new book")
     void shouldCreateNewBook() throws Exception {
         given(bookService.create(any())).willReturn(BOOK_EXPECT.get(0));
         mvc.perform(post("/api/v1/book")
@@ -108,6 +125,7 @@ class BookControllerTest {
                 .andExpect(content().json(mapper.writeValueAsString(BOOK_EXPECT.get(0))));
     }
 
+    //for unauthorised user
     @Test
     @WithAnonymousUser
     @DisplayName("Should fail when the user is anonymous")
@@ -115,4 +133,70 @@ class BookControllerTest {
         mvc.perform(get("/api/v1/book").contentType(MediaType.APPLICATION_JSON).with(csrf()))
                 .andExpect(status().isUnauthorized());
     }
+
+    //for User
+    @Test
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
+    @DisplayName("User should not get list books")
+    void shouldNotGetBookList() throws Exception {
+        given(bookService.findAll()).willReturn(BOOK_EXPECT);
+        mvc.perform(get("/api/v1/book"))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
+    @DisplayName("User should not get book by id")
+    void shouldNotGetBookById() throws Exception {
+        given(bookService.findById(ID)).willReturn(BOOK_EXPECT.get(0));
+        mvc.perform(get("/api/v1/book/{id}", ID))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
+    @DisplayName("User cannot delete book by id")
+    void shouldNotDeleteBookById() throws Exception {
+        mvc.perform(delete("/api/v1/book/{id}", ID))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
+    @DisplayName("User cannot update book")
+    void shouldNotUpdateBook() throws Exception {
+        given(bookService.update(any(BookUpdateDto.class))).willReturn(BOOK_EXPECT.get(0));
+        mvc.perform(put("/api/v1/book/{id}", ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(BOOK_UPDATE_EXPECT)))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
+    @DisplayName("User cannot create new book")
+    void shouldNotCreateNewBook() throws Exception {
+        given(bookService.create(any())).willReturn(BOOK_EXPECT.get(0));
+        mvc.perform(post("/api/v1/book")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(BOOK_CREATE_EXPECT)))
+                .andExpect(status().is4xxClientError());
+    }
+
+
 }

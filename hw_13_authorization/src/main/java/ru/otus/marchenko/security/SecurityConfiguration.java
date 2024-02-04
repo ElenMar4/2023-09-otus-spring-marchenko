@@ -34,12 +34,18 @@ public class SecurityConfiguration {
                                 "/comment/{id}",
                                 "/comment/add/{id}"
                             ).hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/comment").hasRole("USER")
                         .requestMatchers(HttpMethod.GET,
                                 "/author/add",
                                 "/genre/add",
                                 "/book/add",
                                 "/book/edit/{id}"
                             ).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/author",
+                                "/api/v1/genre", "/api/v1/book/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT).hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(login -> login
                         .defaultSuccessUrl("/book")

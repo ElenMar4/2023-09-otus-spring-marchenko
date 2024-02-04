@@ -45,7 +45,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         CommentServiceImpl.class})
 @AutoConfigureWebMvc
 @AutoConfigureMockMvc
-@WithMockUser("User_1")
+@WithMockUser(
+        username = "admin",
+        authorities = {"ROLE_ADMIN"}
+)
 @Import({SecurityConfiguration.class, UserServiceImpl.class})
 @MockBean(UserRepository.class)
 class RestControllerExceptionHandlerTest {
@@ -73,6 +76,7 @@ class RestControllerExceptionHandlerTest {
 
     //____________________404_________________________
     @Test
+
     @DisplayName("Correct return httpStatus=404, when book not found")
     void shouldHandleNotFoundExceptionForBook() throws Exception {
         Mockito

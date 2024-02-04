@@ -27,10 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(GenreController.class)
-@WithMockUser(
-        username = "admin",
-        authorities = {"ROLE_ADMIN"}
-)
 @Import({SecurityConfiguration.class, UserServiceImpl.class})
 @MockBean(UserRepository.class)
 class GenreControllerTest {
@@ -48,8 +44,13 @@ class GenreControllerTest {
     @MockBean
     private GenreService genreService;
 
+    //for Admin
     @Test
-    @DisplayName("Should correct return list genres")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
+    @DisplayName("Admin should correct get list genres")
     void shouldReturnCorrectGenreList() throws Exception {
         given(genreService.findAll()).willReturn(GENRE_EXPECT);
         mvc.perform(get("/api/v1/genre"))
@@ -58,7 +59,11 @@ class GenreControllerTest {
     }
 
     @Test
-    @DisplayName("Should correct create new genre")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
+    @DisplayName("Admin should correct create new genre")
     public void shouldCorrectCreateGenre() throws Exception {
         given(genreService.create(any())).willReturn(GENRE_EXPECT.get(0));
         mvc.perform(post("/api/v1/genre")
@@ -68,12 +73,39 @@ class GenreControllerTest {
                 .andExpect(content().json(mapper.writeValueAsString(GENRE_EXPECT.get(0))));
     }
 
-
+    //for unauthorised user
     @Test
     @WithAnonymousUser
     @DisplayName("Should fail when the user is anonymous")
     public void shouldFailWhenUserIsNotAuthorized() throws Exception{
         mvc.perform(get("/api/v1/genre"))
                 .andExpect(status().isUnauthorized());
+    }
+
+    //forUser
+    @Test
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
+    @DisplayName("User should not get list authors")
+    public void shouldNotReturnAuthorList() throws Exception {
+        given(genreService.findAll()).willReturn(GENRE_EXPECT);
+        mvc.perform(get("/api/v1/genre"))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
+    @DisplayName("User cannot create new author")
+    public void shouldUserCannotCreateAuthor() throws Exception {
+        given(genreService.create(any())).willReturn(GENRE_EXPECT.get(0));
+        mvc.perform(post("/api/v1/genre")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(GENRE_EXPECT.get(0))))
+                .andExpect(status().is4xxClientError());
     }
 }

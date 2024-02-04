@@ -48,9 +48,14 @@ class AuthorControllerTest {
     @MockBean
     private AuthorService authorService;
 
+    //for Admin
     @Test
-    @DisplayName("Should correct return list authors")
-    public void shouldReturnCorrectAuthorList() throws Exception {
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
+    @DisplayName("Admin should correct get list authors")
+    public void shouldGetCorrectAuthorList() throws Exception {
         given(authorService.findAll()).willReturn(AUTHOR_EXPECT);
         mvc.perform(get("/api/v1/author"))
                 .andExpect(status().isOk())
@@ -58,7 +63,11 @@ class AuthorControllerTest {
     }
 
     @Test
-    @DisplayName("Should correct create new author")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
+    @DisplayName("Admin can correct create new author")
     public void shouldCorrectCreateAuthor() throws Exception {
         given(authorService.create(any())).willReturn(AUTHOR_EXPECT.get(0));
         mvc.perform(post("/api/v1/author")
@@ -67,12 +76,39 @@ class AuthorControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(AUTHOR_EXPECT.get(0))));
     }
-
+//for unauthorised user
     @Test
     @WithAnonymousUser
     @DisplayName("Should fail when the user is anonymous")
     public void shouldFailWhenUserIsNotAuthorized() throws Exception{
         mvc.perform(get("/api/v1/author"))
                 .andExpect(status().isUnauthorized());
+    }
+
+    //forUser
+    @Test
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
+    @DisplayName("User should not get list authors")
+    public void shouldNotGetAuthorList() throws Exception {
+        given(authorService.findAll()).willReturn(AUTHOR_EXPECT);
+        mvc.perform(get("/api/v1/author"))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
+    @DisplayName("User cannot create new author")
+    public void shouldCannotCreateAuthor() throws Exception {
+        given(authorService.create(any())).willReturn(AUTHOR_EXPECT.get(0));
+        mvc.perform(post("/api/v1/author")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(AUTHOR_EXPECT.get(0))))
+                .andExpect(status().is4xxClientError());
     }
 }

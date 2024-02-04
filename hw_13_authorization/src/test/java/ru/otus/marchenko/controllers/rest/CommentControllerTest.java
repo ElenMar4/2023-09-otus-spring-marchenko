@@ -26,14 +26,10 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @WebMvcTest(CommentController.class)
-@WithMockUser(
-        username = "admin",
-        authorities = {"ROLE_ADMIN"}
-)
 @Import({SecurityConfiguration.class, UserServiceImpl.class})
 @MockBean(UserRepository.class)
 class CommentControllerTest {
@@ -53,9 +49,14 @@ class CommentControllerTest {
     @MockBean
     private CommentService commentService;
 
+    //for Admin
     @Test
-    @DisplayName("Should correct return list comments by book")
-    void shouldReturnCorrectListCommentsByBookId() throws Exception {
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
+    @DisplayName("Admin should correct get list comments by book")
+    void shouldGetCorrectListCommentsByBookId() throws Exception {
         given(commentService.findAllByBookId(any(Long.class))).willReturn(COMMENTS_LIST_EXPECTED);
         mvc.perform(get("/api/v1/comment/{id}", BOOK_EXPECT.id()))
                 .andExpect(status().isOk())
@@ -63,7 +64,11 @@ class CommentControllerTest {
     }
 
     @Test
-    @DisplayName("Should correct create new comment by book")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
+    @DisplayName("Admin should correct create new comment by book")
     void shouldCreateNewCommentByBook() throws Exception {
         given(commentService.create(any(CommentCreateDto.class))).willReturn(COMMENTS_LIST_EXPECTED.get(0));
         mvc.perform(post("/api/v1/comment")
@@ -74,17 +79,63 @@ class CommentControllerTest {
     }
 
     @Test
-    @DisplayName("Should correct delete comment by id")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
+    @DisplayName("Admin can delete comment by id")
     void shouldCorrectDeleteCommentById() throws Exception {
         mvc.perform(delete("/api/v1/comment/{id}", BOOK_EXPECT.id()))
                 .andExpect(status().isNoContent());
     }
 
+    //for unauthorised user
     @Test
     @WithAnonymousUser
     @DisplayName("Should fail when the user is anonymous")
     public void shouldFailWhenUserIsNotAuthorized() throws Exception{
         mvc.perform(get("/api/v1/comment"))
                 .andExpect(status().isUnauthorized());
+    }
+
+    //for user
+
+    @Test
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
+    @DisplayName("User should not get list comments by book")
+    void shouldNotGetCorrectListCommentsByBookId() throws Exception {
+        given(commentService.findAllByBookId(any(Long.class))).willReturn(COMMENTS_LIST_EXPECTED);
+        mvc.perform(get("/api/v1/comment/{id}", BOOK_EXPECT.id()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(COMMENTS_LIST_EXPECTED)));
+    }
+
+    @Test
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
+    @DisplayName("User should correct create new comment by book")
+    void shouldUserCreateNewCommentByBook() throws Exception {
+        given(commentService.create(any(CommentCreateDto.class))).willReturn(COMMENTS_LIST_EXPECTED.get(0));
+        mvc.perform(post("/api/v1/comment")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(COMMENTS_CREATED)))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(COMMENTS_LIST_EXPECTED.get(0))));
+    }
+
+    @Test
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
+    @DisplayName("User cannot delete comment by id")
+    void shouldNotDeleteCommentById() throws Exception {
+        mvc.perform(delete("/api/v1/comment/{id}", BOOK_EXPECT.id()))
+                .andExpect(status().is4xxClientError());
     }
 }
