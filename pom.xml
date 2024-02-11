@@ -25,5 +25,6 @@
         <module>hw_11_spring_web_flux</module>
         <module>hw_12_spring_security</module>
         <module>hw_13_authorization</module>
+        <module>hw_14_spring_batch</module>
     </modules>
 </project>
