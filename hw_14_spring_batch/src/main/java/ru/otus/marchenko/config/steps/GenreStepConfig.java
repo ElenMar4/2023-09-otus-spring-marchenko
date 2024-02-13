@@ -2,8 +2,7 @@ package ru.otus.marchenko.config.steps;
 
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ItemReadListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.repository.JobRepository;
@@ -26,6 +25,7 @@ import ru.otus.marchenko.services.ConversionService;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class GenreStepConfig {
     @Autowired
     private final JobRepository jobRepository;
@@ -34,8 +34,6 @@ public class GenreStepConfig {
     private final PlatformTransactionManager platformTransactionManager;
 
     private static final int CHUNK_SIZE = 5;
-    private final Logger logger = LoggerFactory.getLogger("Batch");
-
     public static final String JPA_GENRE_ITEM_READER_NAME = "jpaGenreItemReader";
     public static final String CONVERSION_GENRE_STEP_NAME = "conversionGenreStep";
 
@@ -74,17 +72,17 @@ public class GenreStepConfig {
                 .listener(new ItemReadListener<GenreTable>() {
                     @Override
                     public void beforeRead() {
-                        logger.info("Start read genres from sqlDB");
+                        log.info("Start read genres from sqlDB");
                     }
 
                     @Override
                     public void afterRead(GenreTable genreTable) {
-                        logger.info("End read. Genre is {}", genreTable.getName());
+                        log.info("End read. Genre is {}", genreTable.getName());
                     }
 
                     @Override
                     public void onReadError(Exception ex) {
-                        logger.info("Error when we try to read genres from sqlDB");
+                        log.info("Error when we try to read genres from sqlDB");
                     }
                 }).build();
     }

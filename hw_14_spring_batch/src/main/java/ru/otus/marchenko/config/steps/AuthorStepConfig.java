@@ -2,8 +2,7 @@ package ru.otus.marchenko.config.steps;
 
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ItemReadListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.repository.JobRepository;
@@ -23,6 +22,7 @@ import ru.otus.marchenko.services.ConversionService;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 @Configuration
+@Slf4j
 @RequiredArgsConstructor
 public class AuthorStepConfig {
 
@@ -33,8 +33,6 @@ public class AuthorStepConfig {
     private final PlatformTransactionManager platformTransactionManager;
 
     private static final int CHUNK_SIZE = 5;
-    private final Logger logger = LoggerFactory.getLogger("Batch");
-
     public static final String JPA_AUTHOR_ITEM_READER_NAME = "jpaAuthorItemReader";
     public static final String CONVERSION_AUTHOR_STEP_NAME = "conversionAuthorStep";
 
@@ -73,17 +71,17 @@ public class AuthorStepConfig {
                 .listener(new ItemReadListener<AuthorTable>() {
                     @Override
                     public void beforeRead() {
-                        logger.info("Start read Author from sqlDB");
+                        log.info("Start read Author from sqlDB");
                     }
 
                     @Override
                     public void afterRead(AuthorTable authorTable) {
-                        logger.info("End read. Author is {}", authorTable.getFullName());
+                        log.info("End read. Author is {}", authorTable.getFullName());
                     }
 
                     @Override
                     public void onReadError(Exception ex) {
-                        logger.info("Error when we try to read authors from sqlDB");
+                        log.info("Error when we try to read authors from sqlDB");
                     }
                 }
                 ).build();

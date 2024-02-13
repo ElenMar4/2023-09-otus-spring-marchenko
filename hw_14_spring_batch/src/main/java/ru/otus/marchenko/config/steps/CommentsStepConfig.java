@@ -2,8 +2,7 @@ package ru.otus.marchenko.config.steps;
 
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ItemReadListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.repository.JobRepository;
@@ -24,6 +23,7 @@ import ru.otus.marchenko.services.ConversionService;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class CommentsStepConfig {
 
     @Autowired
@@ -33,8 +33,6 @@ public class CommentsStepConfig {
     private final PlatformTransactionManager platformTransactionManager;
 
     private static final int CHUNK_SIZE = 5;
-    private final Logger logger = LoggerFactory.getLogger("Batch");
-
     public static final String JPA_COMMENT_ITEM_READER_NAME = "jpaCommentItemReader";
     public static final String CONVERSION_COMMENT_STEP_NAME = "conversionCommentStep";
 
@@ -73,17 +71,17 @@ public class CommentsStepConfig {
                 .listener(new ItemReadListener<CommentTable>() {
                     @Override
                     public void beforeRead() {
-                        logger.info("Start read comments from sqlDB");
+                        log.info("Start read comments from sqlDB");
                     }
 
                     @Override
                     public void afterRead(CommentTable commentTable) {
-                        logger.info("End read. Comment is {}", commentTable.getMessage());
+                        log.info("End read. Comment is {}", commentTable.getMessage());
                     }
 
                     @Override
                     public void onReadError(Exception ex) {
-                        logger.info("Error when we try to read comments from sqlDB");
+                        log.info("Error when we try to read comments from sqlDB");
                     }
                 }).build();
     }

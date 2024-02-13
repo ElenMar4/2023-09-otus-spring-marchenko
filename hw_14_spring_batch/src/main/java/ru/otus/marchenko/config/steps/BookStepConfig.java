@@ -2,8 +2,7 @@ package ru.otus.marchenko.config.steps;
 
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ItemReadListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.repository.JobRepository;
@@ -24,6 +23,7 @@ import ru.otus.marchenko.services.ConversionService;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class BookStepConfig {
 
     @Autowired
@@ -33,8 +33,6 @@ public class BookStepConfig {
     private final PlatformTransactionManager platformTransactionManager;
 
     private static final int CHUNK_SIZE = 5;
-    private final Logger logger = LoggerFactory.getLogger("Batch");
-
     public static final String JPA_BOOK_ITEM_READER_NAME = "jpaBookItemReader";
     public static final String CONVERSION_BOOK_STEP_NAME = "conversionBookStep";
 
@@ -73,17 +71,17 @@ public class BookStepConfig {
                 .listener(new ItemReadListener<BookTable>() {
                     @Override
                     public void beforeRead() {
-                        logger.info("Start read books from sqlDB");
+                        log.info("Start read books from sqlDB");
                     }
 
                     @Override
                     public void afterRead(BookTable bookTable) {
-                        logger.info("End read. Book is {}", bookTable.getTitle());
+                        log.info("End read. Book is {}", bookTable.getTitle());
                     }
 
                     @Override
                     public void onReadError(Exception ex) {
-                        logger.info("Error when we try to read books from sqlDB");
+                        log.info("Error when we try to read books from sqlDB");
                     }
                 }).build();
     }
