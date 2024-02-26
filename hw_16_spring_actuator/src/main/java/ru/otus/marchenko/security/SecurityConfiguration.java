@@ -46,6 +46,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST).hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/actuator/health", "/actuator").anonymous()
                         .anyRequest().authenticated())
                 .formLogin(login -> login
                         .defaultSuccessUrl("/book")
