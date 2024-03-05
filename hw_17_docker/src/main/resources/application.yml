@@ -1,0 +1,38 @@
+spring:
+  messages:
+    encoding: UTF-8
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hw17db
+    username: postgres
+    password: postgres
+  flyway:
+    enabled: true
+
+  jpa:
+    open-in-view: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: none
+
+    show-sql: true
+
+  jmx:
+    enabled: true
+
+logging:
+  level:
+    ROOT: DEBUG
+  file:
+    name: ./logs/booksApp.log
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: when_authorized
+  health:
+    defaults:
+      enabled: true
